@@ -4,7 +4,8 @@ import {
   getLanguage, setLanguage, t, skillName, laneName,
   problemTitle, stepLabel, nextStarI18n, monthYearText,
   dayLogTitleText, questTextI18n, formatDopaValue,
-  trophyItemName, trophyItemDesc, trophySeriesTitle
+  trophyItemName, trophyItemDesc, trophySeriesTitle,
+  cellTextI18n, problemHelpText, answerTextI18n
 } from '../app/js/i18n.js';
 import { SKILLS } from '../app/js/skills.js';
 import { TROPHIES, SERIES } from '../app/js/trophies.js';
@@ -48,17 +49,34 @@ test('problemTitle and stepLabel translate accurately', () => {
   setLanguage('zh');
   assert.equal(problemTitle('あまりのあるわりざん'), '有余数的除法');
   assert.equal(problemTitle('分数のたしひき'), '分数加减法');
+  assert.equal(problemTitle('小数のかけざん'), '小数乘法');
   assert.equal(stepLabel('一の位'), '个位');
   assert.equal(stepLabel('くりあがり'), '进位');
   assert.equal(stepLabel('あまり'), '余数');
+  assert.equal(stepLabel('2をかける'), '乘以 2');
+  assert.equal(stepLabel('たす（一の位）'), '相加（个位）');
+  assert.equal(stepLabel('商の一の位'), '商的个位');
+  assert.equal(cellTextI18n('最大公約数'), '最大公因数');
+  assert.equal(cellTextI18n('あまり'), '余');
+  assert.equal(cellTextI18n('十の位まで'), '十位');
+  assert.equal(problemHelpText('どちらも わりきれる 数'), '公因数：都能整除的数');
+  assert.equal(answerTextI18n('14と42の最大公約数 ＝ 7'), '14 和 42 的 最大公因数 ＝ 7');
 
   setLanguage('en');
   assert.equal(problemTitle('あまりのあるわりざん'), 'Division with Remainder');
+  assert.equal(problemTitle('小数のかけざん'), 'Decimal Multiplication');
   assert.equal(stepLabel('一の位'), 'Ones');
+  assert.equal(stepLabel('2をかける'), 'Multiply by 2');
+  assert.equal(stepLabel('たす（一の位）'), 'Add (Ones)');
+  assert.equal(cellTextI18n('最大公約数'), 'GCD');
+  assert.equal(problemHelpText('どちらも わりきれる 数'), 'Common factor: divides both');
 
   setLanguage('ja');
   assert.equal(problemTitle('あまりのあるわりざん'), 'あまりのあるわりざん');
   assert.equal(stepLabel('一の位'), '一の位');
+  assert.equal(stepLabel('2をかける'), '2をかける');
+  assert.equal(cellTextI18n('最大公約数'), '最大公約数');
+  assert.equal(problemHelpText('どちらも わりきれる 数'), 'どちらも わりきれる 数');
 });
 
 test('nextStarI18n translates star upgrade requirements to Chinese', () => {

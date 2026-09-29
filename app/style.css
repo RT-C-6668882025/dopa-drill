@@ -400,7 +400,7 @@ body.reduced .logo span, body.reduced .spot, body.reduced .marquee, body.reduced
 /* ------------------------------------------------------------ expression layouts */
 .cell.word { font-size: calc(var(--ch) * .46); white-space: nowrap; color: #4a4f86; }
 .sheet.h .cell.op { font-size: calc(var(--ch) * .62); }
-.cell.dot { justify-self: end; align-self: end; width: 0; overflow: visible; font-size: calc(var(--ch) * .82); line-height: .9; color: var(--ink); pointer-events: none; z-index: 1; display: flex; justify-content: center; }
+.cell.dot { justify-self: end; align-self: stretch; height: 100%; width: 0; overflow: visible; font-size: calc(var(--ch) * .82); line-height: 1; color: var(--ink); pointer-events: none; z-index: 1; display: flex; align-items: center; justify-content: center; }
 .cell.dot.hidden { visibility: hidden; }
 .cell.frac-n { align-self: end; }
 .cell.frac-d { align-self: start; }

@@ -1221,6 +1221,9 @@ export function problemTitle(jaTitle) {
   const dictZh = {
     'わりざん': '除法',
     'あまりのあるわりざん': '有余数的除法',
+    '小数のたしざん': '小数加法',
+    '小数のひきざん': '小数减法',
+    '小数のかけざん': '小数乘法',
     '小数のわりざん': '小数除法',
     'たしざん': '加法',
     'ひきざん': '减法',
@@ -1245,6 +1248,9 @@ export function problemTitle(jaTitle) {
   const dictEn = {
     'わりざん': 'Division',
     'あまりのあるわりざん': 'Division with Remainder',
+    '小数のたしざん': 'Decimal Addition',
+    '小数のひきざん': 'Decimal Subtraction',
+    '小数のかけざん': 'Decimal Multiplication',
     '小数のわりざん': 'Decimal Division',
     'たしざん': 'Addition',
     'ひきざん': 'Subtraction',
@@ -1272,11 +1278,17 @@ export function problemTitle(jaTitle) {
 
 export function stepLabel(jaLabel) {
   if (currentLang === 'ja' || !jaLabel) return jaLabel;
+  const isEn = currentLang === 'en';
   const dictZh = {
     '一の位': '个位',
     '十の位': '十位',
     '百の位': '百位',
     '千の位': '千位',
+    '万の位': '万位',
+    '十万の位': '十万位',
+    '小数第一位': '十分位',
+    '小数第二位': '百分位',
+    '小数第三位': '千分位',
     '整数の部分': '整数部分',
     '分子': '分子',
     '分母': '分母',
@@ -1285,12 +1297,18 @@ export function stepLabel(jaLabel) {
     'こたえ': '答案',
     'くりあがり': '进位',
     'くりさがり': '退位',
+    'ひいた のこり': '相减求差',
   };
   const dictEn = {
     '一の位': 'Ones',
     '十の位': 'Tens',
     '百の位': 'Hundreds',
     '千の位': 'Thousands',
+    '万の位': 'Ten Thousands',
+    '十万の位': 'Hundred Thousands',
+    '小数第一位': 'Tenths',
+    '小数第二位': 'Hundredths',
+    '小数第三位': 'Thousandths',
     '整数の部分': 'Whole number',
     '分子': 'Numerator',
     '分母': 'Denominator',
@@ -1299,9 +1317,32 @@ export function stepLabel(jaLabel) {
     'こたえ': 'Answer',
     'くりあがり': 'Carry',
     'くりさがり': 'Borrow',
+    'ひいた のこり': 'Subtract',
   };
-  const d = currentLang === 'en' ? dictEn : dictZh;
-  return d[jaLabel] || jaLabel;
+  const d = isEn ? dictEn : dictZh;
+  if (d[jaLabel]) return d[jaLabel];
+
+  // 动态模式 1: `${factor}をかける`，如 "2をかける"
+  const mMul = /^(\d+)をかける$/.exec(jaLabel);
+  if (mMul) {
+    return isEn ? `Multiply by ${mMul[1]}` : `乘以 ${mMul[1]}`;
+  }
+
+  // 动态模式 2: `たす（${PLACE[i]}）`，如 "たす（一の位）"
+  const mAdd = /^たす（(.+)）$/.exec(jaLabel);
+  if (mAdd) {
+    const sub = d[mAdd[1]] || mAdd[1];
+    return isEn ? `Add (${sub})` : `相加（${sub}）`;
+  }
+
+  // 动态模式 3: `商の${PLACE[cols - 1 - col]}`，如 "商の一の位"
+  const mQuot = /^商の(.+)$/.exec(jaLabel);
+  if (mQuot) {
+    const sub = d[mQuot[1]] || mQuot[1];
+    return isEn ? `Quotient ${sub}` : `商的${sub}`;
+  }
+
+  return jaLabel;
 }
 
 export function formatDopaValue(L) {
@@ -1394,15 +1435,154 @@ export function dayLogTitleText(m, d) {
 }
 
 export function cellTextI18n(text, lang = currentLang) {
-  if (!text) return text;
+  if (!text || lang === 'ja') return text;
   if (lang === 'zh') {
     if (text === 'は') return '分成';
     if (text === 'と') return '和';
     if (text === 'の') return '的';
+    if (text === 'あまり') return '余';
+    if (text === '最大公約数') return '最大公因数';
+    if (text === '最小公倍数') return '最小公倍数';
+    if (text === 'を') return '精确到';
+    const m = /^([一十百千万]+)の位まで$/.exec(text);
+    if (m) {
+      const pl = m[1] === '一' ? '个' : m[1];
+      return `${pl}位`;
+    }
   } else if (lang === 'en') {
     if (text === 'は') return 'is';
     if (text === 'と') return 'and';
     if (text === 'の') return 'of';
+    if (text === 'あまり') return 'R';
+    if (text === '最大公約数') return 'GCD';
+    if (text === '最小公倍数') return 'LCM';
+    if (text === 'を') return 'rounded to';
+    const m = /^([一十百千万]+)の位まで$/.exec(text);
+    if (m) {
+      const pl = m[1] === '一' ? 'ones' : m[1] === '十' ? 'tens' : m[1] === '百' ? 'hundreds' : m[1] === '千' ? 'thousands' : 'ten-thousands';
+      return `${pl} place`;
+    }
+  }
+  return text;
+}
+
+export function stepHint(jaHint) {
+  if (currentLang === 'ja' || !jaHint) return jaHint;
+  const isEn = currentLang === 'en';
+  const m = /^(\d+)の中に(\d+)はいくつ$/.exec(jaHint);
+  if (m) {
+    return isEn ? `How many ${m[2]}s in ${m[1]}?` : `${m[1]} 里面有几个 ${m[2]}？`;
+  }
+  return jaHint;
+}
+
+export function problemHelpText(jaText) {
+  if (currentLang === 'ja' || !jaText) return jaText;
+  const isEn = currentLang === 'en';
+
+  if (jaText === 'どちらも わりきれる 数') {
+    return isEn ? 'Common factor: divides both' : '公因数：都能整除的数';
+  }
+  if (jaText === '分母どうし・分子どうしをかける') {
+    return isEn ? 'Multiply numerators & denominators' : '分子与分子相乘，分母与分母相乘';
+  }
+  if (jaText === 'くりあがりの 1') {
+    return isEn ? 'Carry 1' : '进位的 1';
+  }
+
+  let m;
+  if ((m = /^くりあがりの\s*(\d+)$/.exec(jaText))) {
+    return isEn ? `Carry ${m[1]}` : `进位的 ${m[1]}`;
+  }
+  if ((m = /^(\d+)のだん\s*(.*)$/.exec(jaText))) {
+    return isEn ? `${m[1]} times table: ${m[2]}` : `${m[1]}的倍数: ${m[2]}`;
+  }
+  if ((m = /^(\d+)に\s*いくつで\s*(\d+)$/.exec(jaText))) {
+    return isEn ? `${m[1]} + ? = ${m[2]}` : `${m[1]} 加上几等于 ${m[2]}`;
+  }
+  if ((m = /^(\d+)に\s*(\d+)で\s*10$/.exec(jaText))) {
+    return isEn ? `Make 10: ${m[1]} + ${m[2]}` : `${m[1]} 凑十差 ${m[2]}`;
+  }
+  if ((m = /^まず\s*(.+)$/.exec(jaText))) {
+    return isEn ? `First ${m[1]}` : `先算 ${m[1]}`;
+  }
+  if ((m = /^先に\s*(.+)$/.exec(jaText))) {
+    return isEn ? `First ${m[1]}` : `先算 ${m[1]}`;
+  }
+  if ((m = /^(.+)の\s*10こぶん$/.exec(jaText))) {
+    return isEn ? `10 times of ${m[1]}` : `${m[1]} 的 10 倍`;
+  }
+  if ((m = /^(\d+)を\s*(\d+)つに\s*わける$/.exec(jaText))) {
+    return isEn ? `Divide ${m[1]} into ${m[2]} parts` : `把 ${m[1]} 平均分成 ${m[2]} 份`;
+  }
+  if ((m = /^(.+)\s*と\s*(.+)$/.exec(jaText))) {
+    return isEn ? `${m[1]} and ${m[2]}` : `${m[1]} 和 ${m[2]}`;
+  }
+  if ((m = /^(.+)\s*を\s*考える$/.exec(jaText))) {
+    return isEn ? `Think about ${m[1]}` : `先思考 ${m[1]}`;
+  }
+  if ((m = /^(.+)\s*と\s*同じ$/.exec(jaText))) {
+    return isEn ? `Same as ${m[1]}` : `相当于 ${m[1]}`;
+  }
+  if ((m = /^(\d+)のばいすう$/.exec(jaText))) {
+    return isEn ? `Multiples of ${m[1]}` : `找 ${m[1]} 的倍数`;
+  }
+  if ((m = /^([一十百千万]+)の位を\s*四捨五入$/.exec(jaText))) {
+    const plZh = m[1] === '一' ? '个' : m[1];
+    const plEn = m[1] === '一' ? 'ones' : m[1] === '十' ? 'tens' : 'hundreds';
+    return isEn ? `Round at ${plEn} place` : `对${plZh}位四舍五入`;
+  }
+  if ((m = /^(\d+)ばい$/.exec(jaText))) {
+    return isEn ? `× ${m[1]}` : `${m[1]} 倍`;
+  }
+  if ((m = /^(\d+)で\s*わる$/.exec(jaText))) {
+    return isEn ? `Divide by ${m[1]}` : `除以 ${m[1]}`;
+  }
+  if ((m = /^分母は\s*(.+)\s*のまま$/.exec(jaText))) {
+    return isEn ? `Keep denominator ${m[1]}` : `分母保持 ${m[1]} 不变`;
+  }
+  if ((m = /^通分すると\s*分母は\s*(.+)$/.exec(jaText))) {
+    return isEn ? `Common denominator is ${m[1]}` : `通分公分母为 ${m[1]}`;
+  }
+  if ((m = /^分子に\s*(.+)\s*をかける$/.exec(jaText))) {
+    return isEn ? `Multiply numerator by ${m[1]}` : `分子乘以 ${m[1]}`;
+  }
+  if ((m = /^分母に\s*(.+)\s*をかける$/.exec(jaText))) {
+    return isEn ? `Multiply denominator by ${m[1]}` : `分母乘以 ${m[1]}`;
+  }
+  if ((m = /^(.+)\s*を\s*ひっくりかえして\s*かける$/.exec(jaText))) {
+    return isEn ? `Invert ${m[1]} and multiply` : `把 ${m[1]} 颠倒过来相乘`;
+  }
+
+  return jaText;
+}
+
+export function answerTextI18n(text, lang = currentLang) {
+  if (!text || lang === 'ja') return text;
+  if (lang === 'zh') {
+    return text
+      .replace(/あまり/g, ' 余 ')
+      .replace(/最大公約数/g, '最大公因数')
+      .replace(/最小公倍数/g, '最小公倍数')
+      .replace(/(\d+)と(\d+\/\d+)/g, '$1又$2')
+      .replace(/(\d+)と(\d+)/g, '$1 和 $2')
+      .replace(/の/g, ' 的 ')
+      .replace(/を/g, ' 精确到 ')
+      .replace(/([一十百千万]+)の位まで/g, '$1位')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  if (lang === 'en') {
+    return text
+      .replace(/あまり/g, ' R ')
+      .replace(/最大公約数/g, 'GCD')
+      .replace(/最小公倍数/g, 'LCM')
+      .replace(/(\d+)と(\d+\/\d+)/g, '$1 and $2')
+      .replace(/(\d+)と(\d+)/g, '$1 and $2')
+      .replace(/の/g, ' of ')
+      .replace(/を/g, ' rounded to ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
   return text;
 }

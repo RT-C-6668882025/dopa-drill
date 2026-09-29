@@ -333,7 +333,7 @@ function activate(k) {
   S.stepMisses = 0;
   armCombo(k === 0);
   $$('.cell.hint-glow').forEach((c) => c.classList.remove('hint-glow'));
-  $('#step-label').innerHTML = `<b>${i18n.stepLabel(st.label)}</b>${st.hint ? `　${st.hint}` : ''}`;
+  $('#step-label').innerHTML = `<b>${i18n.stepLabel(st.label)}</b>${st.hint ? `　${i18n.stepHint(st.hint)}` : ''}`;
   if (k === p.steps.length - 1 && k > 0 && S.E >= 0.45 && !S.reach) startReach();
 }
 
@@ -591,7 +591,7 @@ function giveHelp(st) {
   els.forEach((el) => el.classList.add('hint-glow'));
   if (els[0] && !S.reduced) setTimeout(() => hero.point(centerOf(els[0])), 900);
   if (n >= 3) {
-    $('#step-label').innerHTML = `<b>${i18n.stepLabel(st.label)}</b><span class="help-text">${i18n.t('hintLabel')}　${st.help.text}</span>`;
+    $('#step-label').innerHTML = `<b>${i18n.stepLabel(st.label)}</b><span class="help-text">${i18n.t('hintLabel')}　${i18n.problemHelpText(st.help.text)}</span>`;
     audio.play('blip', audio.now(), { m: 81, v: 0.08 });
   }
 }
@@ -679,7 +679,7 @@ async function clearProblem() {
     if (E > 0.85) pip.classList.add('rainbow'); else pip.style.setProperty('--c', cols[Math.min(3, Math.floor(E * 4.5))]);
     popEl(pip, 1.2);
   }
-  $('#step-label').innerHTML = `<b>${S.problem.answerText}</b>`;
+  $('#step-label').innerHTML = `<b>${i18n.answerTextI18n(S.problem.answerText)}</b>`;
   if (gained) pointsPop(gained);
   if (wasReach) audio.reachHit(E); else audio.clear(E);
   hanamaru(E);
