@@ -155,3 +155,22 @@ test('trophy translations cover all series and items without empty results', () 
   assert.equal(trophyItemName(tSecretSunday), '星期天的数学');
 });
 
+test('settings credits translations in all supported languages', () => {
+  setLanguage('zh');
+  assert.equal(t('setCreditsLabel'), '关于与致谢');
+  assert.ok(t('setCreditsDesc').includes('@grmchn4ai'));
+  assert.equal(t('setCreditsRepo'), 'GitHub 原作仓库');
+
+  setLanguage('ja');
+  assert.equal(t('setCreditsLabel'), 'クレジット');
+  assert.ok(t('setCreditsDesc').includes('@grmchn4ai'));
+  assert.equal(t('setCreditsRepo'), 'GitHub 原作リポジトリ');
+
+  setLanguage('en');
+  assert.equal(t('setCreditsLabel'), 'Credits');
+  assert.ok(t('setCreditsDesc').includes('@grmchn4ai'));
+  assert.equal(t('setCreditsRepo'), 'GitHub Original Repo');
+
+  // Reset to default
+  setLanguage('zh');
+});

@@ -178,6 +178,10 @@ const STRINGS = {
     setData: '存档数据',
     setDataReset: '全部重置',
     setDataResetNote: '清除此浏览器上的所有游戏进度、成就与自定义设置，回到初始状态',
+    setCreditsLabel: '关于与致谢',
+    setCreditsDesc: '感谢原作者 <b>@grmchn4ai</b> 的精妙原作与开源分享',
+    setCreditsRepo: 'GitHub 原作仓库',
+    setCreditsAria: '前往 GitHub 查看原作仓库',
     btnClose: '关闭',
 
     // Modals: Bonus, Hammer, Confirm, Info
@@ -368,6 +372,10 @@ const STRINGS = {
     setData: 'データ',
     setDataReset: 'すべて リセット',
     setDataResetNote: 'すべての データを けして さいしょに もどします',
+    setCreditsLabel: 'クレジット',
+    setCreditsDesc: '原作者 <b>@grmchn4ai</b> さんの素晴らしい発想と公開に感謝します',
+    setCreditsRepo: 'GitHub 原作リポジトリ',
+    setCreditsAria: 'GitHubの原作リポジトリを開く',
     btnClose: 'とじる',
 
     // Modals: Bonus, Hammer, Confirm, Info
@@ -558,6 +566,10 @@ const STRINGS = {
     setData: 'Game Data',
     setDataReset: 'Reset All Data',
     setDataResetNote: 'Clear all game progress, trophies and settings on this browser',
+    setCreditsLabel: 'Credits',
+    setCreditsDesc: 'Special thanks to original author <b>@grmchn4ai</b> for the wonderful project',
+    setCreditsRepo: 'GitHub Original Repo',
+    setCreditsAria: 'View original repository on GitHub',
     btnClose: 'Close',
 
     // Modals: Bonus, Hammer, Confirm, Info

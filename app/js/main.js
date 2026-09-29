@@ -2814,6 +2814,14 @@ function updateI18nDOM() {
     }
   });
 
+  // 1.1 Rich HTML elements
+  $$('[data-i18n-html]').forEach((el) => {
+    const key = el.dataset.i18nHtml;
+    if (key) {
+      el.innerHTML = i18n.t(key);
+    }
+  });
+
   // 2. Accessibility labels
   $$('[data-i18n-aria]').forEach((el) => {
     const key = el.dataset.i18nAria;
