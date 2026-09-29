@@ -85,7 +85,7 @@ const STRINGS = {
     gradeGroupAria: '按年级练习',
     
     // Quests & Calendar
-    todayQuests: '今日每日任务',
+    todayQuests: '今日任务',
     questComplete: '全部完成！',
     questAllBonus: '全完成奖励',
     calendarTitle: '出勤打卡日历',
