@@ -1,11 +1,16 @@
+import * as i18n from './i18n.js';
+
 // Title tour: captions belong to the interface, never to the mascot.
-const INTRO = { title: 'あそびかた', text: 'もんだいは 3つの\nえらびかたが あるよ' };
-const LEVEL = { target: '#start', title: 'じぶんレベル', text: 'いまの きみに あった もんだい。\nはじめは じつりょくチェック' };
-const GRADES = { target: '.grades', title: '1ねんせい〜6ねんせい', text: 'がくねんの もんだいを\nまとめて れんしゅう' };
-const TREE = { target: '#open-tree', title: 'スキルツリー', text: 'やりたい もんだいを\n1つ えらんで れんしゅう' };
-const TROPHY = { target: '#open-trophy', title: 'トロフィー', text: 'あそぶと もらえるよ。\nつづけて あそぶと ふえていく' };
-const COLLECTION = { target: '#open-collect', title: 'コレクション', text: 'トロフィーの ごほうびで ふえる\nはいけい・おんがく・きせかえなどを\nえらべるよ' };
-const LAST = { target: '#start', title: 'まよったら じぶんレベル！', text: 'この せつめいは\n？ で また みられるよ', recommend: true };
+function getPages(help = false) {
+  const intro = { title: i18n.t('guideIntroTitle'), text: i18n.t('guideIntroText') };
+  const level = { target: '#start', title: i18n.t('guideLevelTitle'), text: i18n.t('guideLevelText') };
+  const grades = { target: '.grades', title: i18n.t('guideGradesTitle'), text: i18n.t('guideGradesText') };
+  const tree = { target: '#open-tree', title: i18n.t('guideTreeTitle'), text: i18n.t('guideTreeText') };
+  const trophy = { target: '#open-trophy', title: i18n.t('guideTrophyTitle'), text: i18n.t('guideTrophyText') };
+  const collection = { target: '#open-collect', title: i18n.t('guideCollectTitle'), text: i18n.t('guideCollectText') };
+  const last = { target: '#start', title: i18n.t('guideLastTitle'), text: i18n.t('guideLastText'), recommend: true };
+  return [intro, level, grades, tree, ...(help ? [trophy, collection] : []), last];
+}
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
 // Use measured body + arm bounds. Hard constraints always outrank label coverage.
@@ -204,19 +209,23 @@ export function createGuide({ hero, reduced, onClose }) {
     $('#guide-text').textContent = page.text;
     overlay.classList.toggle('guide-last', !!page.recommend);
     if (page.recommend) {
-      $('#guide-text').replaceChildren(document.createTextNode('この せつめいは\n'));
+      const isZh = i18n.getLanguage() === 'zh';
+      const isEn = i18n.getLanguage() === 'en';
+      const prefix = isZh ? '本说明在设置下方的\n' : (isEn ? 'You can view this guide\nanytime with ' : 'この せつめいは\n');
+      const suffix = isZh ? ' 中随时可再次查看。' : (isEn ? ' in settings.' : ' で また みられるよ');
+      $('#guide-text').replaceChildren(document.createTextNode(prefix));
       const icon = document.createElement('span');
       icon.id = 'guide-help-icon';
       icon.className = 'icon-btn guide-help-icon';
       icon.setAttribute('role', 'img');
-      icon.setAttribute('aria-label', 'あそびかた');
+      icon.setAttribute('aria-label', i18n.t('helpBtnAria'));
       icon.append(document.querySelector('#open-guide svg').cloneNode(true));
-      $('#guide-text').append(icon, document.createTextNode(' で また みられるよ'));
+      $('#guide-text').append(icon, document.createTextNode(suffix));
     }
     $('#guide-dots').innerHTML = pages.map((_, i) => `<i${i === index ? ' class="current"' : ''} aria-hidden="true"></i>`).join('');
-    $('#guide-dots').setAttribute('aria-label', `${pages.length}つのうち ${index + 1}つめ`);
+    $('#guide-dots').setAttribute('aria-label', i18n.t('guidePageOf', { total: pages.length, cur: index + 1 }));
     $('#guide-back').disabled = index === 0;
-    $('#guide-next').textContent = index === pages.length - 1 ? 'はじめる！' : 'つぎへ';
+    $('#guide-next').textContent = index === pages.length - 1 ? i18n.t('guideStart') : i18n.t('guideNext');
     layout(true);
     $('#guide-next').focus({ preventScroll: true });
   }
@@ -238,7 +247,10 @@ export function createGuide({ hero, reduced, onClose }) {
   function open({ help = false } = {}) {
     if (active) return;
     saved = { focus: document.activeElement, scroll: title.scrollTop, inert: app.inert, bodyParent: hero.root.parentNode, armsParent: hero.armsFront.parentNode };
-    pages = [INTRO, LEVEL, GRADES, TREE, ...(help ? [TROPHY, COLLECTION] : []), LAST];
+    pages = getPages(help);
+    $('#guide-recommend').textContent = i18n.t('guideRecommend');
+    $('#guide-skip').textContent = i18n.t('guideSkip');
+    $('#guide-back').textContent = i18n.t('guideBack');
     index = 0; active = true;
     overlay.hidden = false;
     document.body.classList.add('guide-open');

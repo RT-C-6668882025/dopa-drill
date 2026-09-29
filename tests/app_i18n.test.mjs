@@ -1,0 +1,94 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  getLanguage, setLanguage, t, skillName, laneName,
+  problemTitle, stepLabel, nextStarI18n, monthYearText,
+  dayLogTitleText, questTextI18n, formatDopaValue
+} from '../app/js/i18n.js';
+import { SKILLS } from '../app/js/skills.js';
+
+test('i18n default language and switching', () => {
+  // Reset to zh
+  setLanguage('zh');
+  assert.equal(getLanguage(), 'zh');
+  assert.equal(t('appTitle'), '多帕速算 (Dopa Drill)');
+  assert.equal(t('correctStampText'), '正确');
+  assert.equal(t('fullScoreBanner'), '100分达成！');
+
+  // Switch to ja
+  setLanguage('ja');
+  assert.equal(getLanguage(), 'ja');
+  assert.equal(t('appTitle'), 'ドパドリル');
+  assert.equal(t('correctStampText'), 'せいかい');
+
+  // Switch to en
+  setLanguage('en');
+  assert.equal(getLanguage(), 'en');
+  assert.equal(t('appTitle'), 'Dopa Drill');
+  assert.equal(t('correctStampText'), 'Correct!');
+
+  // Switch back to zh
+  setLanguage('zh');
+  assert.equal(getLanguage(), 'zh');
+});
+
+test('every skill has a Chinese name mapping', () => {
+  setLanguage('zh');
+  assert.equal(SKILLS.length, 58);
+  for (const sk of SKILLS) {
+    const zh = skillName(sk.id);
+    assert.ok(zh, `Missing Chinese translation for skill: ${sk.id} (${sk.name})`);
+    assert.notEqual(zh.trim(), '');
+  }
+});
+
+test('problemTitle and stepLabel translate accurately', () => {
+  setLanguage('zh');
+  assert.equal(problemTitle('あまりのあるわりざん'), '有余数的除法');
+  assert.equal(problemTitle('分数のたしひき'), '分数加减法');
+  assert.equal(stepLabel('一の位'), '个位');
+  assert.equal(stepLabel('くりあがり'), '进位');
+  assert.equal(stepLabel('あまり'), '余数');
+
+  setLanguage('en');
+  assert.equal(problemTitle('あまりのあるわりざん'), 'Division with Remainder');
+  assert.equal(stepLabel('一の位'), 'Ones');
+
+  setLanguage('ja');
+  assert.equal(problemTitle('あまりのあるわりざん'), 'あまりのあるわりざん');
+  assert.equal(stepLabel('一の位'), '一の位');
+});
+
+test('nextStarI18n translates star upgrade requirements to Chinese', () => {
+  setLanguage('zh');
+  // ☆2
+  const next2 = { n: 2, text: 'さいきん 10もんの 初回正解が 80% いじょう', now: 'いま 6もん・83%' };
+  const res2 = nextStarI18n(next2);
+  assert.match(res2.text, /最近 10 题初次正解率达 80% 以上/);
+  assert.match(res2.now, /当前 6 题·83%/);
+
+  // ☆3
+  const next3 = { n: 3, text: '1もんを だいたい 2.5びょう いないで とく', now: 'いま 2.1びょう（4/5もん）' };
+  const res3 = nextStarI18n(next3);
+  assert.match(res3.text, /每题平均在 2.5 秒内解答完毕/);
+  assert.match(res3.now, /当前 2.1 秒（已答 4\/5 题）/);
+
+  // ☆4
+  const next4 = { n: 4, text: '☆3から 7日 たってから、5もん つづけて 初回正解', now: 'あと 3日 まってね' };
+  const res4 = nextStarI18n(next4);
+  assert.match(res4.text, /达到 ☆3 后满 7 天/);
+  assert.match(res4.now, /还需等待 3 天/);
+});
+
+test('date and calendar formatting in Chinese', () => {
+  setLanguage('zh');
+  assert.equal(monthYearText(2026, 8), '2026年9月');
+  assert.equal(dayLogTitleText(9, 29), '9月29日的练习记录');
+});
+
+test('questTextI18n translations', () => {
+  setLanguage('zh');
+  assert.equal(questTextI18n({ id: 'play1' }, 'fallback'), '游玩 1 轮算术练习');
+  assert.equal(questTextI18n({ id: 'combo5' }, 'fallback'), '达成 5 连击');
+  assert.equal(questTextI18n({ id: 'extra' }, 'fallback'), '进入加时挑战关卡');
+});

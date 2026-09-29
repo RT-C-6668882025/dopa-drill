@@ -15,8 +15,8 @@
   --red: #ff4f6d;
   --E: 0;
   --kick: 0;
-  --round: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
-  --chunky: "Dela Gothic One", "Zen Maru Gothic", sans-serif;
+  --round: "Zen Maru Gothic", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --chunky: "Dela Gothic One", "Zen Maru Gothic", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
   color-scheme: light;
 }
 
@@ -123,6 +123,13 @@ body.reduced .logo *, body.reduced .logo-burst { animation: none !important; }
 .reset-btn { align-self: center; min-width: 230px; font-weight: 900; }
 .modal .pick { justify-content: center; }
 .modal .pick button { width: 30%; max-width: 96px; }
+.lang-pick-group { display: flex; gap: 10px; justify-content: center; }
+.lang-pick-group button {
+  width: 30%; max-width: 96px; height: 56px; border: 3px solid var(--ink); border-radius: 16px; background: #fff;
+  font-family: var(--round); font-size: 15px; font-weight: 900; box-shadow: 0 5px 0 var(--ink); transition: transform .08s;
+}
+.lang-pick-group button[aria-checked="true"], .lang-pick-group button[aria-pressed="true"] { background: var(--yellow); transform: translateY(-3px) rotate(-2deg); }
+.lang-pick-group button:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--ink); }
 .slider { -webkit-appearance: none; appearance: none; width: 100%; height: 34px; background: transparent; margin: 0; --v: 1; }
 .slider::-webkit-slider-runnable-track { height: 14px; border: 2.5px solid var(--ink); border-radius: 999px; background: linear-gradient(90deg, var(--pink) 0 calc(var(--v) * 100%), #fff calc(var(--v) * 100%)); }
 .slider::-moz-range-track { height: 10px; border: 2.5px solid var(--ink); border-radius: 999px; background: linear-gradient(90deg, var(--pink) 0 calc(var(--v) * 100%), #fff calc(var(--v) * 100%)); }
