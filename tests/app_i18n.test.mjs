@@ -3,9 +3,11 @@ import assert from 'node:assert/strict';
 import {
   getLanguage, setLanguage, t, skillName, laneName,
   problemTitle, stepLabel, nextStarI18n, monthYearText,
-  dayLogTitleText, questTextI18n, formatDopaValue
+  dayLogTitleText, questTextI18n, formatDopaValue,
+  trophyItemName, trophyItemDesc, trophySeriesTitle
 } from '../app/js/i18n.js';
 import { SKILLS } from '../app/js/skills.js';
+import { TROPHIES, SERIES } from '../app/js/trophies.js';
 
 test('i18n default language and switching', () => {
   // Reset to zh
@@ -92,3 +94,46 @@ test('questTextI18n translations', () => {
   assert.equal(questTextI18n({ id: 'combo5' }, 'fallback'), '达成 5 连击');
   assert.equal(questTextI18n({ id: 'extra' }, 'fallback'), '进入加时挑战关卡');
 });
+
+test('trophy translations cover all series and items without empty results', () => {
+  setLanguage('zh');
+
+  // Verify series titles
+  for (const s of SERIES) {
+    const title = trophySeriesTitle(s.key, s.title);
+    assert.ok(title, `Missing title for series ${s.key}`);
+    assert.notEqual(title.trim(), '');
+  }
+
+  // Verify specific series titles
+  assert.equal(trophySeriesTitle('streak', 'れんぞくで あそぶ'), '连续打卡');
+  assert.equal(trophySeriesTitle('items', 'コレクション'), '外观收集');
+  assert.equal(trophySeriesTitle('unlocked', 'スキル かいほう'), '技能解锁');
+  assert.equal(trophySeriesTitle('stickers', 'ログインシール'), '日历印章');
+  assert.equal(trophySeriesTitle('dopa', 'ドパ'), '多帕能量');
+
+  // Verify all trophies have non-empty Chinese name and desc
+  assert.ok(TROPHIES.length > 300, `Expected 300+ trophies, found ${TROPHIES.length}`);
+  for (const t of TROPHIES) {
+    const name = trophyItemName(t);
+    const desc = trophyItemDesc(t);
+    assert.ok(name, `Missing name for trophy ${t.id}`);
+    assert.ok(desc, `Missing desc for trophy ${t.id}`);
+    assert.notEqual(name.trim(), '');
+    assert.notEqual(desc.trim(), '');
+  }
+
+  // Verify sample item translations
+  const tStreak3 = TROPHIES.find((x) => x.id === 'streak-3');
+  assert.equal(trophyItemName(tStreak3), '连续 3 天');
+
+  const tItems10 = TROPHIES.find((x) => x.id === 'items-10');
+  assert.equal(trophyItemName(tItems10), '收集外观 10 个');
+
+  const tUnlocked3 = TROPHIES.find((x) => x.id === 'unlocked-3');
+  assert.equal(trophyItemName(tUnlocked3), '解锁 3 项');
+
+  const tSecretSunday = TROPHIES.find((x) => x.id === 'secret-sunday');
+  assert.equal(trophyItemName(tSecretSunday), '星期天的数学');
+});
+

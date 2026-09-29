@@ -2212,7 +2212,7 @@ function openTrophies() {
     ? `获得了${catName(it.cat)}「${itemDisplayName(it)}」！`
     : (isEn ? `Earned ${catName(it.cat)} "${itemDisplayName(it)}"!` : `${catName(it.cat)}「${it.name}」を てにいれた！`);
   const rwSubTxt = isZh ? '可在宝物收藏库中装备' : (isEn ? 'Available in Collection' : 'コレクションで えらべるよ');
-  $('#tg-list').innerHTML = list.slice(0, MAX).map((x) => `<li class="r-${x.rank}"><i>${trophySvg(x.rank)}</i><span><b>${x.name}</b><small>${x.desc}</small></span></li>`).join('') + (list.length > MAX ? `<li class="more">${moreTxt}</li>` : '')
+  $('#tg-list').innerHTML = list.slice(0, MAX).map((x) => `<li class="r-${x.rank}"><i>${trophySvg(x.rank)}</i><span><b>${i18n.trophyItemName(x)}</b><small>${i18n.trophyItemDesc(x)}</small></span></li>`).join('') + (list.length > MAX ? `<li class="more">${moreTxt}</li>` : '')
     + rewards.map((it) => `<li class="reward"><i>${itemThumb(it)}</i><span><b>${rwGetTxt(it)}</b><small>${rwSubTxt}</small></span></li>`).join('');
   $('#trophy-got').hidden = false;
   audio.unlock();
@@ -2245,7 +2245,8 @@ function trophyValueText(t, v) {
   if (t.metric === 'bestDopaL') return `${curPrefix}${fmtDopa(stats().bestDopaL || 0)}`;
   if (t.metric === 'minutes') return `${curPrefix}${v}${isZh ? '分钟' : (isEn ? 'm' : 'ふん')}`;
   if (/^(flag:|gradeDone|laneDone|allModes)/.test(t.metric)) return '';
-  return `${curPrefix}${v.toLocaleString('ja-JP')}`;
+  const locale = isZh ? 'zh-CN' : (isEn ? 'en-US' : 'ja-JP');
+  return `${curPrefix}${v.toLocaleString(locale)}`;
 }
 function renderTrophyList() {
   const ts = trophyState();
@@ -2270,20 +2271,29 @@ function renderTrophyList() {
       const secretName = isZh ? '？？？' : (isEn ? '???' : '？？？');
       const secretDesc = isZh ? '隐藏成就' : (isEn ? 'Secret Trophy' : 'ひみつの トロフィー');
       const rewardPrefix = isZh ? '奖励：' : (isEn ? 'Reward: ' : 'ごほうび：');
-      const next = v.next ? `<span class="tr-next">${nextPrefix}${secret ? secretName : v.next.name}${!secret && trophyValueText(v.next, v.value) ? `（${trophyValueText(v.next, v.value)}）` : ''}</span>` : `<span class="tr-next done">${completeTxt}</span>`;
+      const nextTitle = secret ? secretName : i18n.trophyItemName(v.next);
+      const next = v.next ? `<span class="tr-next">${nextPrefix}${nextTitle}${!secret && trophyValueText(v.next, v.value) ? `（${trophyValueText(v.next, v.value)}）` : ''}</span>` : `<span class="tr-next done">${completeTxt}</span>`;
       const items = s.items.filter((x) => trFilter.f !== 'got' || got[x.id]).map((x) => {
         const hide = x.secret && !got[x.id];
         const rw = x.reward && ul.ITEM[x.reward];
-        return `<li class="${got[x.id] ? 'got' : ''}"><i>${trophySvg(got[x.id] ? x.rank : 'none')}</i><span><b>${hide ? secretName : x.name}</b><small>${hide ? secretDesc : x.desc}</small>${rw && !hide ? `<small class="rw">${rewardPrefix}${catName(rw.cat)}「${itemDisplayName(rw)}」</small>` : ''}</span><em>${got[x.id] ? day(got[x.id]) : ''}</em></li>`;
+        const itName = hide ? secretName : i18n.trophyItemName(x);
+        const itDesc = hide ? secretDesc : i18n.trophyItemDesc(x);
+        return `<li class="${got[x.id] ? 'got' : ''}"><i>${trophySvg(got[x.id] ? x.rank : 'none')}</i><span><b>${itName}</b><small>${itDesc}</small>${rw && !hide ? `<small class="rw">${rewardPrefix}${catName(rw.cat)}「${itemDisplayName(rw)}」</small>` : ''}</span><em>${got[x.id] ? day(got[x.id]) : ''}</em></li>`;
       }).join('');
-      html += `<details class="tr-series"><summary><i class="tr-icon">${trophySvg(v.top ? v.top.rank : 'none')}</i><span class="tr-t"><b>${s.title}</b>${next}</span><span class="tr-n">${v.got.length}/${s.items.length}</span><span class="tr-dots">${dots}</span></summary><ul>${items}</ul></details>`;
+      const sTitle = i18n.trophySeriesTitle(s.key, s.title);
+      html += `<details class="tr-series"><summary><i class="tr-icon">${trophySvg(v.top ? v.top.rank : 'none')}</i><span class="tr-t"><b>${sTitle}</b>${next}</span><span class="tr-n">${v.got.length}/${s.items.length}</span><span class="tr-dots">${dots}</span></summary><ul>${items}</ul></details>`;
     }
   }
   if (trFilter.f === 'soon') {
     // Closest next steps first (secrets and yes/no goals left out).
     const soon = tr.SERIES.map((s) => tr.seriesView(s, ts, m)).filter((v) => v.next && v.series.cat !== 'ひみつ' && v.next.need > 1 && v.next.metric !== 'bestDopaL')
       .map((v) => ({ v, k: Math.min(0.999, v.value / v.next.need) })).sort((a, b) => b.k - a.k).slice(0, 12);
-    html = soon.map(({ v, k }) => `<div class="tr-soon"><i class="tr-icon">${trophySvg(v.top ? v.top.rank : 'none')}</i><span class="tr-t"><b>${v.next.name}</b><span class="tr-next">${v.series.title}　${trophyValueText(v.next, v.value)} / ${v.next.need.toLocaleString('ja-JP')}</span></span><span class="tr-pct" style="--p:${k.toFixed(3)}"><b>${Math.floor(k * 100)}%</b></span></div>`).join('');
+    const needLocale = isZh ? 'zh-CN' : (isEn ? 'en-US' : 'ja-JP');
+    html = soon.map(({ v, k }) => {
+      const itName = i18n.trophyItemName(v.next);
+      const sTitle = i18n.trophySeriesTitle(v.series.key, v.series.title);
+      return `<div class="tr-soon"><i class="tr-icon">${trophySvg(v.top ? v.top.rank : 'none')}</i><span class="tr-t"><b>${itName}</b><span class="tr-next">${sTitle}　${trophyValueText(v.next, v.value)} / ${v.next.need.toLocaleString(needLocale)}</span></span><span class="tr-pct" style="--p:${k.toFixed(3)}"><b>${Math.floor(k * 100)}%</b></span></div>`;
+    }).join('');
   }
   $('#tr-list').innerHTML = html || `<p class="tr-empty">${isZh ? '暂无成就' : (isEn ? 'No trophies yet' : 'まだ ないよ')}</p>`;
   $('#trophy-count').textContent = `${tr.earnedCount(ts)} / ${tr.TROPHIES.length}`;

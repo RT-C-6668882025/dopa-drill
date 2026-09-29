@@ -121,12 +121,31 @@ body.reduced .logo *, body.reduced .logo-burst { animation: none !important; }
 .set-inline .slider { flex: 1; }
 .set-note { margin: 0; font-size: 12px; opacity: .7; }
 .reset-btn { align-self: center; min-width: 230px; font-weight: 900; }
-.modal .pick { justify-content: center; }
-.modal .pick button { width: 30%; max-width: 96px; }
+.modal .pick { justify-content: center; gap: 10px; }
+.modal .pick button {
+  flex: 1;
+  max-width: 104px;
+  height: 56px;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 4px;
+  white-space: nowrap;
+}
 .lang-pick-group { display: flex; gap: 10px; justify-content: center; }
 .lang-pick-group button {
-  width: 30%; max-width: 96px; height: 56px; border: 3px solid var(--ink); border-radius: 16px; background: #fff;
-  font-family: var(--round); font-size: 15px; font-weight: 900; box-shadow: 0 5px 0 var(--ink); transition: transform .08s;
+  flex: 1;
+  max-width: 104px;
+  height: 56px;
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  background: #fff;
+  font-family: var(--round);
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow: 0 5px 0 var(--ink);
+  transition: transform .08s;
 }
 .lang-pick-group button[aria-checked="true"], .lang-pick-group button[aria-pressed="true"] { background: var(--yellow); transform: translateY(-3px) rotate(-2deg); }
 .lang-pick-group button:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--ink); }
@@ -141,9 +160,9 @@ body.reduced .logo *, body.reduced .logo-burst { animation: none !important; }
 .pick { display: flex; gap: 10px; }
 .pick button {
   width: 84px; height: 56px; border: 3px solid var(--ink); border-radius: 16px; background: #fff;
-  font-family: var(--chunky); font-size: 26px; box-shadow: 0 5px 0 var(--ink); transition: transform .08s;
+  font-family: var(--chunky); font-size: 25px; box-shadow: 0 5px 0 var(--ink); transition: transform .08s;
 }
-.pick button small { font-family: var(--round); font-size: 14px; margin-left: 2px; }
+.pick button small { font-family: var(--round); font-size: 13px; font-weight: 800; margin-left: 1px; }
 .pick button[aria-checked="true"] { background: var(--yellow); transform: translateY(-3px) rotate(-2deg); }
 .big-btn {
   min-width: 240px; height: 68px; padding: 0 28px; border: 3.5px solid var(--ink); border-radius: 22px;

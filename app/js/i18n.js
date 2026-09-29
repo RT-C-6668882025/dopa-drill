@@ -433,7 +433,7 @@ const STRINGS = {
     loading: 'Loading...',
     pts: 'Pts',
     timesUnit: 'times',
-    problemsUnit: 'problems',
+    problemsUnit: 'Qs',
     secondsUnit: 's',
     minutesUnit: 'min',
     streakDaysUnit: 'days',
@@ -795,26 +795,31 @@ export const RANK_NAME_I18N = {
   en: { bronze: 'Bronze', silver: 'Silver', gold: 'Gold', rainbow: 'Rainbow', secret: 'Secret' },
 };
 
+const fmtZh = (n) => (n >= 10000 && n % 10000 === 0 ? `${n / 10000}万` : Number(n).toLocaleString('zh-CN'));
+const DOPA_LABELS_ZH = { 2: '100', 3: '1000', 4: '1万', 5: '10万', 6: '100万', 7: '1000万', 8: '1亿', 9: '10亿' };
+const DOPA_LABELS_EN = { 2: '100', 3: '1,000', 4: '10K', 5: '100K', 6: '1M', 7: '10M', 8: '100M', 9: '1B' };
+
 // Trophy series & descriptions
 export const TROPHY_SERIES_I18N = {
   zh: {
-    days: { title: '每日出勤', name: (v) => `坚持 ${v} 天`, desc: (v) => `累计游玩达到 ${v} 天` },
+    days: { title: '每日出勤', name: (v) => `坚持 ${fmtZh(v)} 天`, desc: (v) => `累计游玩达到 ${fmtZh(v)} 天` },
     streak: { title: '连续打卡', name: (v) => `连续 ${v} 天`, desc: (v) => `不间断连续游玩 ${v} 天` },
     stickers: { title: '日历印章', name: (v) => `印章 ${v} 枚`, desc: (v) => `在打卡日历上收集 ${v} 枚印章` },
     crowns: { title: '完美皇冠', name: (v) => `皇冠 ${v} 顶`, desc: (v) => `在日历上累计收获 ${v} 顶满分皇冠` },
-    plays: { title: '游玩次数', name: (v) => `游玩 ${v} 轮`, desc: (v) => `完成 ${v} 轮基础算术练习` },
-    minutes: { title: '练习时长', name: (v) => `时长 ${v} 分钟`, desc: (v) => `累计练习时间达 ${v} 分钟` },
-    problems: { title: '做题总数', name: (v) => `解题 ${v} 道`, desc: (v) => `累计答对 ${v} 道数学题` },
-    cells: { title: '填入数字', name: (v) => `填写 ${v} 格`, desc: (v) => `在算式中正确输入 ${v} 个数字格` },
+    plays: { title: '游玩次数', name: (v) => `游玩 ${fmtZh(v)} 轮`, desc: (v) => `完成 ${fmtZh(v)} 轮基础算术练习` },
+    minutes: { title: '练习时长', name: (v) => (v >= 60 ? `累计 ${v / 60} 小时` : `时长 ${v} 分钟`), desc: (v) => (v >= 60 ? `累计练习时间达 ${v / 60} 小时` : `累计练习时间达 ${v} 分钟`) },
+    problems: { title: '做题总数', name: (v) => `解题 ${fmtZh(v)} 道`, desc: (v) => `累计答对 ${fmtZh(v)} 道数学题` },
+    cells: { title: '填入数字', name: (v) => `填写 ${fmtZh(v)} 格`, desc: (v) => `在算式中正确输入 ${fmtZh(v)} 个数字格` },
     unlocked: { title: '技能解锁', name: (v) => `解锁 ${v} 项`, desc: (v) => `在技能树中解锁 ${v} 项技能` },
     mastered: { title: '技能掌握', name: (v) => `掌握 ${v} 项`, desc: (v) => `在技能树中彻底掌握 ${v} 项技能` },
     extras: { title: '进入挑战', name: (v) => `挑战 ${v} 次`, desc: (v) => `进入加时挑战关卡 ${v} 次` },
     extraBest: { title: '挑战单场答对', name: (v) => `单场挑战 ${v} 题`, desc: (v) => `在单次加时挑战中答对 ${v} 题` },
-    extraSolved: { title: '挑战累计答对', name: (v) => `挑战累计 ${v} 题`, desc: (v) => `在加时挑战中累计答对 ${v} 题` },
+    extraSolved: { title: '挑战累计答对', name: (v) => `挑战累计 ${fmtZh(v)} 题`, desc: (v) => `在加时挑战中累计答对 ${fmtZh(v)} 题` },
     combo: { title: '连击达人', name: (v) => `${v} 连击`, desc: (v) => `达成 ${v} 次连续正确连击` },
     perfects: { title: '满分全对', name: (v) => `100分 ${v} 次`, desc: (v) => `以初次100%全对成绩通关 ${v} 次` },
-    firstTry: { title: '初次正解', name: (v) => `首次答对 ${v} 题`, desc: (v) => `第一遍就正确回答 ${v} 题` },
-    bestDopa: { title: '多帕能量', name: (v) => `多帕达 ${v}`, desc: (v) => `单场比赛中多帕能量达到 ${v}` },
+    firstTry: { title: '初次正解', name: (v) => `首次答对 ${fmtZh(v)} 题`, desc: (v) => `第一遍就正确回答 ${fmtZh(v)} 题` },
+    dopa: { title: '多帕能量', name: (v) => `${DOPA_LABELS_ZH[v] || v}多帕`, desc: (v) => `单场比赛中多帕能量达到 ${DOPA_LABELS_ZH[v] || v}` },
+    bestDopa: { title: '多帕能量', name: (v) => `${DOPA_LABELS_ZH[v] || v}多帕`, desc: (v) => `单场比赛中多帕能量达到 ${DOPA_LABELS_ZH[v] || v}` },
     review: { title: '错题攻坚', name: (v) => `复习 ${v} 题`, desc: (v) => `在复习模式中重新答对 ${v} 道错题` },
     questDays: { title: '每日任务全清', name: (v) => `任务全清 ${v} 天`, desc: (v) => `完成当天全部 3 个每日任务达 ${v} 天` },
     questRun: { title: '连续任务全清', name: (v) => `连续全清 ${v} 天`, desc: (v) => `连续 ${v} 天全部完成每日任务` },
@@ -1073,6 +1078,102 @@ export function trophySeriesInfo(key) {
 export function secretTrophyInfo(id) {
   const dict = SECRET_TROPHIES_I18N[currentLang];
   return dict ? dict[id] : null;
+}
+
+export function trophySeriesTitle(seriesKey, fallbackTitle) {
+  if (currentLang === 'ja' || !seriesKey) return fallbackTitle;
+  const lang = currentLang === 'en' ? 'en' : 'zh';
+  const dict = TROPHY_SERIES_I18N[lang] || TROPHY_SERIES_I18N.zh;
+  if (!dict) return fallbackTitle;
+  const gm = /^grade([1-6])$/.exec(seriesKey);
+  if (gm) {
+    const g = gm[1];
+    return lang === 'zh' ? `${g}年级练习` : `Grade ${g} Practice`;
+  }
+  if (seriesKey === 'dopa' && dict.dopa) return dict.dopa.title;
+  if (seriesKey === 'dopa' && dict.bestDopa) return dict.bestDopa.title;
+  if (dict[seriesKey] && dict[seriesKey].title) return dict[seriesKey].title;
+  return fallbackTitle;
+}
+
+export function trophyItemI18n(item) {
+  if (!item) return { name: '', desc: '' };
+  if (currentLang === 'ja') return { name: item.name, desc: item.desc };
+
+  const lang = currentLang === 'en' ? 'en' : 'zh';
+  const id = item.id || '';
+  const seriesKey = item.series || '';
+  const need = item.need;
+
+  // 1. Secrets
+  if (id.startsWith('secret-')) {
+    const sdict = SECRET_TROPHIES_I18N[lang] || {};
+    if (sdict[id]) return sdict[id];
+  }
+
+  // 2. Grade Done
+  const gDone = /^gradeDone-([1-6])$/.exec(id);
+  if (gDone) {
+    const g = gDone[1];
+    return lang === 'zh'
+      ? { name: `${g}年级大圆满`, desc: `彻底掌握${g}年级的所有技能` }
+      : { name: `Grade ${g} Mastered`, desc: `Master all skills in Grade ${g}` };
+  }
+
+  // 3. Grade Star 3
+  const gStar = /^gradeStar3-([1-6])$/.exec(id);
+  if (gStar) {
+    const g = gStar[1];
+    return lang === 'zh'
+      ? { name: `${g}年级全达☆3`, desc: `将${g}年级所有技能全部升至☆3及以上` }
+      : { name: `Grade ${g} all ☆3`, desc: `Reach ☆3 or higher on all Grade ${g} skills` };
+  }
+
+  // 4. Lane Done
+  const lDone = /^laneDone-([0-3])$/.exec(id);
+  if (lDone) {
+    const idx = Number(lDone[1]);
+    const lName = (LANES_I18N[lang] && LANES_I18N[lang][idx]) || `分类${idx}`;
+    return lang === 'zh'
+      ? { name: `「${lName}」全掌握`, desc: `彻底掌握“${lName}”分类下的全部技能` }
+      : { name: `${lName} Mastered`, desc: `Master all skills in ${lName}` };
+  }
+
+  // 5. Grade 1 ~ 6 Plays
+  const gPlay = /^grade([1-6])$/.exec(seriesKey);
+  if (gPlay) {
+    const g = gPlay[1];
+    return lang === 'zh'
+      ? { name: `${g}年级 ${need} 轮`, desc: `在「${g}年级」分册中游玩 ${need} 轮` }
+      : { name: `Grade ${g} (${need} Sessions)`, desc: `Play ${need} sessions in Grade ${g}` };
+  }
+
+  // 6. Dopa
+  if (seriesKey === 'dopa') {
+    const dLabel = (lang === 'zh' ? DOPA_LABELS_ZH[need] : DOPA_LABELS_EN[need]) || String(need);
+    return lang === 'zh'
+      ? { name: `${dLabel}多帕`, desc: `单场比赛中多帕能量达到 ${dLabel}` }
+      : { name: `${dLabel} Dopa`, desc: `Reach ${dLabel} Dopa energy in one session` };
+  }
+
+  // 7. General Series
+  const dict = TROPHY_SERIES_I18N[lang] || {};
+  const sdict = dict[seriesKey] || (seriesKey === 'dopa' ? dict.bestDopa : null);
+  if (sdict) {
+    const name = typeof sdict.name === 'function' ? sdict.name(need) : sdict.name;
+    const desc = typeof sdict.desc === 'function' ? sdict.desc(need) : sdict.desc;
+    if (name && desc) return { name, desc };
+  }
+
+  return { name: item.name, desc: item.desc };
+}
+
+export function trophyItemName(item) {
+  return trophyItemI18n(item).name;
+}
+
+export function trophyItemDesc(item) {
+  return trophyItemI18n(item).desc;
 }
 
 export function questTextI18n(q, fallbackText) {
