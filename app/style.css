@@ -201,7 +201,8 @@ body.reduced .logo *, body.reduced .logo-burst { animation: none !important; }
 
 .hud2 { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; padding: 0 14px; }
 .tally { display: flex; gap: 6px; font-size: 13px; }
-.tally span { padding: 3px 10px; border-radius: 999px; background: #fff; border: 2px solid var(--ink); }
+.tally > span { padding: 3px 10px; border-radius: 999px; background: #fff; border: 2px solid var(--ink); }
+.tally > span > span { padding: 0; border: none; background: transparent; }
 .tally b { font-family: var(--chunky); font-weight: 400; font-size: 16px; }
 .tally small { font-size: 11px; opacity: .6; }
 .tally .ng b { color: var(--violet); }
