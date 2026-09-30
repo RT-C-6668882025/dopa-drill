@@ -1,3 +1,4 @@
+const canvasPlatform=require('../platform/canvas');
 const viewport=require('../platform/viewport');
 // Canvas 2D particle layer: paper confetti, stars, sparks, coins, fireworks,
 // streamers, mini Dopakichi sprites and floating score text.
@@ -119,9 +120,8 @@ class FX {
   sprite(key, w, h, paint) {
     let spr = SPRITES.get(key);
     if (!spr) {
-      const cv = document.createElement('canvas');
       const pad = 4; const k = 2;
-      cv.width = Math.ceil((w + pad * 2) * k); cv.height = Math.ceil((h + pad * 2) * k);
+      const cv = canvasPlatform.create2D(Math.ceil((w + pad * 2) * k), Math.ceil((h + pad * 2) * k));
       const c = cv.getContext('2d');
       c.scale(k, k); c.translate(pad + w / 2, pad + h / 2);
       paint(c);
