@@ -27,7 +27,7 @@ Page({
       svgCanvas.drawTree(ctx,tree,{width:r.width,height:r.height});
     }).exec();
   },
- resolveEl(e){const ds=e.target&&e.target.dataset||e.currentTarget&&e.currentTarget.dataset||{};const id=ds.domId;if(!id)return null;const el=dom.get(id);Object.assign(el.dataset,ds);return el},
+ resolveEl(e){const ds=e.target&&e.target.dataset||e.currentTarget&&e.currentTarget.dataset||{};let id=ds.domId;if(!id)return null;if(ds.key!=null)id='pad-'+(ds.key==='Backspace'?'backspace':ds.key);else if(ds.grade!=null)id='grade-'+ds.grade;else if(ds.count!=null)id='count-'+ds.count;else if(ds.lang!=null)id='lang-'+ds.lang;const el=dom.get(id);Object.assign(el.dataset,ds);return el},
   domEvent(e){const el=this.resolveEl(e);if(el)el.dispatch('click',{detail:e.detail,target:el,clientX:e.detail&&e.detail.x,clientY:e.detail&&e.detail.y})},
   domInput(e){const el=this.resolveEl(e);if(!el)return;el.value=e.detail.value;el.dispatch('input',{detail:e.detail,target:el});},
   domChange(e){const el=this.resolveEl(e);if(!el)return;el.value=e.detail.value;el.dispatch('change',{detail:e.detail,target:el});},
