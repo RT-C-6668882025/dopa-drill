@@ -1,0 +1,167 @@
+<view id="app">
+    
+    <view id="screen-title" class="screen is-active">
+      <button class="icon-btn settings-btn" id="open-settings" data-i18n-aria="settingsBtnAria">
+        <view class="svg-slot"></view>
+      </button>
+      <button class="icon-btn settings-btn help-btn" id="open-guide" data-i18n-aria="helpBtnAria">
+        <view class="svg-slot"></view>
+      </button>
+      <text id="logo" class="logo">
+        <view class="svg-slot"></view>
+        <text class="logo-top"><text data-c="多">多</text><text data-c="帕">帕</text></text>
+        <text class="logo-ribbon"><view class="svg-slot"></view><text>速</text><text>算</text></text>
+        <text class="logo-bits"><text style="x:-46%;y:4%;r:-18deg;c:#3fdcb0">＋</text><text style="x:44%;y:-2%;r:14deg;c:#a77bff">×</text><text style="x:-34%;y:104%;r:10deg;c:#ff4f6d">÷</text><text style="x:36%;y:102%;r:-12deg;c:#ffd23f">−</text></text>
+      </text>
+      <view class="title-stage" id="title-stage"></view>
+      <view class="modes" id="modes">
+        <button id="start" class="big-btn level-btn"><text data-i18n="myLevel">个性化闯关</text><text id="level-sub" data-i18n="myLevelSub">首次游玩将进行实力诊断测试</text></button>
+        <button id="start-review" class="sub-btn review-btn review-main" hidden="{{true}}"><text data-i18n="review">巩固错题</text> <text id="review-count">0</text></button>
+        <view class="grades" data-i18n-aria="gradeGroupAria">
+          <button data-grade="1">1<text data-i18n="grade1">年级</text></button><button data-grade="2">2<text data-i18n="grade2">年级</text></button><button data-grade="3">3<text data-i18n="grade3">年级</text></button>
+          <button data-grade="4">4<text data-i18n="grade4">年级</text></button><button data-grade="5">5<text data-i18n="grade5">年级</text></button><button data-grade="6">6<text data-i18n="grade6">年级</text></button>
+        </view>
+        <view class="mode-row">
+          <button id="open-tree" class="sub-btn"><text data-i18n="skillTree">技能树</text> <text id="tree-badge"></text></button>
+          <button id="open-trophy" class="sub-btn"><text data-i18n="trophy">成就奖杯</text> <text id="trophy-badge"></text></button>
+          <button id="open-collect" class="sub-btn"><text data-i18n="collection">收藏展示</text> <text id="collect-badge"></text></button>
+        </view>
+      </view>
+      <view class="quest-card" id="quests">
+        <view class="quest-head"><text id="quest-title" data-i18n="todayQuests">今日任务</text><text class="quest-reward" id="quest-reward"></text></view>
+        <view class="quest-list" id="quest-list"></view>
+      </view>
+      <view class="cal-card" id="calendar">
+        <view class="cal-head">
+          <button class="cal-nav" id="cal-prev" data-i18n-aria="calPrevMonth">‹</button>
+          <text id="cal-title" data-i18n="calendarTitle">出勤打卡日历</text>
+          <button class="cal-nav" id="cal-next" data-i18n-aria="calNextMonth">›</button>
+        </view>
+        <view class="cal-badges" id="cal-badges"></view>
+        <view class="cal-week" id="cal-week"><text>日</text><text>一</text><text>二</text><text>三</text><text>四</text><text>五</text><text>六</text></view>
+        <view class="cal-grid" id="cal-grid"></view>
+      </view>
+      <text class="hint" data-i18n="keyboardHint">支持使用数字键和退格键（Backspace）作答</text>
+    </view>
+
+    
+    <view id="screen-tree" class="screen">
+      <view class="tree-head">
+        <button class="icon-btn" id="tree-back" data-i18n-aria="treeBackAria">‹</button>
+        <text id="tree-title" data-i18n="treeHeadTitle">技能树</text>
+        <text class="tree-count" id="tree-count"></text>
+      </view>
+      <text class="tree-stars" id="tree-stars"></text>
+      <text class="tree-note" data-i18n="treeNote">轻按练习（达到 ☆ 条件可掌握）· 长按可重置该技能及后续节点</text>
+      <view class="tree-scroll" id="tree-scroll"><view class="tree-lanes" id="tree-lanes"></view><view class="tree" id="tree"><view class="svg-slot"></view></view></view>
+      <text class="toast" id="toast" hidden="{{true}}"></text>
+    </view>
+
+    
+    <view id="screen-trophy" class="screen">
+      <view class="tree-head">
+        <button class="icon-btn" id="trophy-back" data-i18n-aria="treeBackAria">‹</button>
+        <text id="trophy-title" data-i18n="trophyHeadTitle">成就奖杯</text>
+        <text class="tree-count" id="trophy-count"></text>
+      </view>
+      <view class="tr-filter">
+        <button data-f="all" data-i18n="trFilterAll">全部</button><button data-f="got" data-i18n="trFilterGot">已获得</button><button data-f="next" data-i18n="trFilterNext">未获得</button><button data-f="soon" data-i18n="trFilterSoon">即将达成</button>
+      </view>
+      <view class="tr-scroll" id="tr-scroll"><view class="tr-list" id="tr-list"></view></view>
+    </view>
+
+    
+    <view id="screen-collect" class="screen">
+      <view class="tree-head">
+        <button class="icon-btn" id="collect-back" data-i18n-aria="treeBackAria">‹</button>
+        <text id="collect-title" data-i18n="collectHeadTitle">宝物收藏库</text>
+        <text class="tree-count" id="collect-count"></text>
+      </view>
+      <view class="co-preview" id="co-preview"><view class="stamp co-mark" id="co-mark"></view><text class="co-now" id="co-now"></text></view>
+      <view class="co-tabs" id="co-tabs"></view>
+      <view class="co-scroll" id="co-scroll"><text class="co-note" id="co-note" data-i18n="collectNote">在此选择游戏中生效的视觉外观、音乐与终场特效（选择“随机”每次将自动随机）</text><view class="co-grid" id="co-grid"></view></view>
+    </view>
+
+    
+    <view id="screen-play" class="screen">
+      <view class="hud">
+        <view class="pips" id="pips"></view>
+        <view class="clock"><text id="clock-label">目标 2:40</text><text id="clock">0:00</text></view>
+        <text class="demo-tag" data-i18n="demoTag">演示模式</text>
+        <button class="icon-btn" id="mute" data-i18n-aria="muteBtnAria">♪</button>
+      </view>
+      <view class="hud2">
+        <view class="tally"><text><text data-i18n="correctCount">正确</text> <text id="ok">0</text><text id="ok-total">/10</text></text><text class="ng"><text data-i18n="missCount">差一点</text> <text id="ng">0</text></text></view>
+        <view class="combo" id="combo-box"><text id="combo">0</text><text data-i18n="comboLabel">连击</text><text class="combo-mult" id="combo-mult"></text><text class="combo-track"><text id="combo-bar"></text></text></view>
+        <view class="dopa" id="dopa-box"><text data-i18n="dopaLabel">多帕</text><text id="dopa">0</text></view>
+      </view>
+      <view class="stage" id="stage">
+        <view class="svg-slot"></view>
+        <view class="spot spot-l"></view><view class="spot spot-r"></view>
+        <view class="svg-slot"></view>
+      </view>
+      <view class="card" id="card">
+        <view class="marquee"></view>
+        <view class="card-top"><text class="chip" id="qtitle">加法</text><text class="qno" id="qno">第 1 题</text></view>
+        <view class="sheet-wrap"><view class="sheet" id="sheet"></view></view>
+        <text class="step-label" id="step-label">个位</text>
+        <view class="stamp" id="stamp"></view>
+        <view class="reach-tag" id="reach-tag">还剩 1 格</view>
+      </view>
+      <view class="pad" id="pad">
+        <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+        <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+        <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+        <button data-key="Backspace" class="del">⌫</button><button data-key="0" class="zero">0</button>
+      </view>
+    </view>
+
+    
+    <view id="screen-result" class="screen">
+      <view class="result-card">
+        <text class="chip" id="result-title" data-i18n="basicResultTitle">基础练习完成</text>
+        <text class="score"><text id="r-score">100</text><text data-i18n="pts">分</text></text>
+        <view class="stats">
+          <view><text data-i18n="correctCount">正确</text><text id="r-ok">10题</text></view>
+          <view><text data-i18n="missCount">差一点</text><text id="r-ng">0次</text></view>
+          <view><text data-i18n="accuracyLabel">初次正解率</text><text id="r-rate">100%</text></view>
+          <view><text data-i18n="timeLabel">用时</text><text id="r-time">1:23</text></view>
+        </view>
+        <text class="dopa-final"><text data-i18n="dopaLabel">多帕</text><text id="r-dopa">0</text></text>
+        <view class="growth-box" id="r-growth"></view>
+        <text class="unlock" id="r-unlock"></text>
+        <view class="skill-news" id="r-skills"></view>
+        <view class="quest-mini" id="r-quests"></view>
+        <view class="actions">
+          <button id="go-extra" class="big-btn"><text data-i18n="btnGoExtra">挑战加时赛</text> <text data-i18n="btnGoExtraSub">90秒限时</text></button>
+          <button id="go-review" class="sub-btn review-btn" data-i18n="btnReviewMistakes" hidden="{{true}}">重做错题</button>
+          <button id="go-tree" class="sub-btn" data-i18n="btnViewTree" hidden="{{true}}">查看技能树</button>
+          <button id="go-again" class="sub-btn" data-i18n="btnPlayAgain" hidden="{{true}}">再来一次</button>
+          <button id="go-title" class="sub-btn" data-i18n="btnFinish">结束返回</button>
+        </view>
+      </view>
+    </view>
+
+    
+    <view id="screen-final" class="screen">
+      <view class="result-card">
+        <text class="chip" id="final-title" data-i18n="finalResultTitle">加时挑战结束</text>
+        <text class="score"><text id="f-score">100</text><text data-i18n="pts">分</text></text>
+        <text class="breakdown" id="f-break">基础 100 ＋ 挑战加分 0</text>
+        <view class="stats">
+          <view><text data-i18n="extraSolvedLabel">挑战答对</text><text id="f-ok">0题</text></view>
+          <view><text data-i18n="extraMissLabel">挑战失误</text><text id="f-ng">0次</text></view>
+          <view><text data-i18n="basicMissLabel">基础失误</text><text id="f-bng">0次</text></view>
+          <view><text data-i18n="basicTimeLabel">基础用时</text><text id="f-time">0:00</text></view>
+        </view>
+        <text class="dopa-final"><text data-i18n="dopaLabel">多帕</text><text id="f-dopa">0</text></text>
+        <view class="skill-news" id="f-skills"></view>
+        <view class="quest-mini" id="f-quests"></view>
+        <view class="actions">
+          <button id="f-review" class="sub-btn review-btn" data-i18n="btnReviewMistakes" hidden="{{true}}">重做错题</button>
+          <button id="f-tree" class="sub-btn" data-i18n="btnViewTree" hidden="{{true}}">查看技能树</button>
+          <button id="again" class="big-btn" data-i18n="btnFinish">结束返回</button>
+        </view>
+      </view>
+    </view>
+  </view>
