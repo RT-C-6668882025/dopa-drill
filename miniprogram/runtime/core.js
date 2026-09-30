@@ -99,6 +99,6 @@ function quadPoint(a, c, b, t) {
 
 function centerOf(el) { return platform.centerOf(el); }
 
-const params = new URLSearchParams(location.search);
+const params = platform.params;
 
 module.exports={now,onFrame,startClock,wait,tween,clamp,lerp,invLerp,rand,randInt,pick,chance,easeLinear,easeOutCubic,easeInCubic,easeInOutCubic,easeOutQuint,easeInQuad,easeOutQuad,easeOutBack,easeInBack,easeOutElastic,Spring,quadPoint,centerOf,params};
