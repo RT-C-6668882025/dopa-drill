@@ -301,7 +301,6 @@ function problemFor(prog, skillId, rng) {
   return p;
 }
 
-export { signature };
 
 // ---------------------------------------------------------------- time capsule (id039)
 // A problem from the child's first days with a skill comes back once it is
