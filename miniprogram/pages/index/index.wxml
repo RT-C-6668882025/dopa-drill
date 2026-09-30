@@ -2,6 +2,7 @@
 <template name="dom-tree">
   <block wx:for="{{nodes}}" wx:key="index">
     <text wx:if="{{item.type==='text'}}">{{item.text}}</text>
+    <canvas wx:elif="{{item.tag==='svg'}}" type="2d" class="{{item.className}} svg-dynamic" data-svg-id="{{item.id}}"></canvas>
     <view wx:else class="{{item.className}}" hidden="{{item.hidden}}" data-dom-dyn-index="{{index}}" style="grid-row:{{item.style.gridRow}};grid-column:{{item.style.gridColumn}};opacity:{{item.style.opacity}};transform:{{item.style.transform}};top:{{item.style.top}};left:{{item.style.left}};width:{{item.style.width}};height:{{item.style.height}};">
       <text wx:if="{{item.textContent}}">{{item.textContent}}</text>
       <template wx:if="{{item.children.length}}" is="dom-tree" data="{{nodes:item.children}}"/>
