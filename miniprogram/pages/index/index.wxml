@@ -12,15 +12,15 @@
     
     <view id="screen-title" class="screen is-active" data-dom-id="screen-title">
       <button class="icon-btn settings-btn" id="open-settings" data-i18n-aria="settingsBtnAria" data-dom-id="open-settings">
-        <view class="svg-slot"></view>
+        <view class="svg-host"></view>
       </button>
       <button class="icon-btn settings-btn help-btn" id="open-guide" data-i18n-aria="helpBtnAria" data-dom-id="open-guide">
-        <view class="svg-slot"></view>
+        <view class="svg-host"></view>
       </button>
       <text id="logo" class="logo" data-dom-id="logo">
-        <view class="svg-slot"></view>
+        <view class="svg-host"></view>
         <text class="logo-top"><text data-c="多">多</text><text data-c="帕">帕</text></text>
-        <text class="logo-ribbon"><view class="svg-slot"></view><text>速</text><text>算</text></text>
+        <text class="logo-ribbon"><view class="svg-host"></view><text>速</text><text>算</text></text>
         <text class="logo-bits"><text style="x:-46%;y:4%;r:-18deg;c:#3fdcb0">＋</text><text style="x:44%;y:-2%;r:14deg;c:#a77bff">×</text><text style="x:-34%;y:104%;r:10deg;c:#ff4f6d">÷</text><text style="x:36%;y:102%;r:-12deg;c:#ffd23f">−</text></text>
       </text>
       <view class="title-stage" id="title-stage" data-dom-id="title-stage"></view>
@@ -63,7 +63,7 @@
       </view>
       <text class="tree-stars" id="tree-stars" data-dom-id="tree-stars"></text>
       <text class="tree-note" data-i18n="treeNote">轻按练习（达到 ☆ 条件可掌握）· 长按可重置该技能及后续节点</text>
-      <view class="tree-scroll" id="tree-scroll" data-dom-id="tree-scroll"><view class="tree-lanes" id="tree-lanes" data-dom-id="tree-lanes"><template is="dom-tree" data="{{nodes:dom['tree-lanes'].children}}"/></view><view class="tree" id="tree" data-dom-id="tree"><view class="svg-slot"><template is="dom-tree" data="{{nodes:dom['tree'].children}}"/></view></view></view>
+      <view class="tree-scroll" id="tree-scroll" data-dom-id="tree-scroll"><view class="tree-lanes" id="tree-lanes" data-dom-id="tree-lanes"><template is="dom-tree" data="{{nodes:dom['tree-lanes'].children}}"/></view><view class="tree" id="tree" data-dom-id="tree"><template is="dom-tree" data="{{nodes:dom['tree'].children}}"/></view></view>
       <text class="toast" id="toast" hidden="{{true}}" data-dom-id="toast"></text>
     </view>
 
@@ -106,9 +106,9 @@
         <view class="dopa" id="dopa-box" data-dom-id="dopa-box"><text data-i18n="dopaLabel">多帕</text><text id="dopa" data-dom-id="dopa">0</text></view>
       </view>
       <view class="stage" id="stage" data-dom-id="stage">
-        <view class="svg-slot"></view>
+        <view class="svg-host"></view>
         <view class="spot spot-l"></view><view class="spot spot-r"></view>
-        <view class="svg-slot"></view>
+        <view class="svg-host"></view>
       </view>
       <view class="card" id="card" data-dom-id="card">
         <view class="marquee"></view>
