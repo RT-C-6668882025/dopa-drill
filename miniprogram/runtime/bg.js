@@ -1,3 +1,4 @@
+const viewport=require('../platform/viewport');
 // Full-screen WebGL backdrop: sunburst rays that grow into a rainbow tunnel of
 // Dopakichi silhouettes. Falls back to a CSS conic gradient without WebGL.
 
@@ -236,8 +237,8 @@ class Backdrop {
     this.canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); this.gl = null; this.canvas.style.display = 'none'; this.fallback.style.display = 'block'; });
   }
   resize() {
-    const dpr = Math.min(1.25, window.devicePixelRatio || 1);
-    const w = Math.round(innerWidth * dpr); const h = Math.round(innerHeight * dpr);
+    const dpr = Math.min(1.25, viewport.dpr());
+    const w = Math.round(viewport.width() * dpr); const h = Math.round(viewport.height() * dpr);
     if (this.canvas.width !== w || this.canvas.height !== h) { this.canvas.width = w; this.canvas.height = h; }
     this.dpr = dpr;
   }
