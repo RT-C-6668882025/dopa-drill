@@ -18,7 +18,7 @@ class Element{
  dispatch(type,event={}){for(const fn of this._events[type]||[])fn({...event,currentTarget:this,target:event.target||this})}
  querySelector(sel){return findIn(this,sel)[0]||null} querySelectorAll(sel){return findIn(this,sel)}
  closest(sel){let n=this;while(n){if(matches(n,sel))return n;n=n.parentNode}return null} focus(){} blur(){} scrollIntoView(){}
- getBoundingClientRect(){return this._rect||{left:0,top:0,right:0,bottom:0,width:0,height:0,x:0,y:0}} cloneNode(deep=false){const n=new Element(this.id);n.tagName=this.tagName;n.className=this.className;n.dataset={...this.dataset};n._text=this._text;n._html=this._html;if(deep)this.children.forEach(x=>n.appendChild(x.cloneNode?x.cloneNode(true):x));return n} getTotalLength(){return 300}
+ getBoundingClientRect(){return this._rect||{left:0,top:0,right:0,bottom:0,width:0,height:0,x:0,y:0}} get clientWidth(){return this.getBoundingClientRect().width||parseFloat(this.style.width)||0} get clientHeight(){return this.getBoundingClientRect().height||parseFloat(this.style.height)||0} get offsetWidth(){return this.clientWidth||Math.max(24,(this._text||'').length*(parseFloat(this.style.fontSize)||20)*.7)} get offsetHeight(){return this.clientHeight||(parseFloat(this.style.fontSize)||20)*1.25} get offsetTop(){return this.getBoundingClientRect().top} get offsetLeft(){return this.getBoundingClientRect().left} get parentElement(){return this.parentNode} cloneNode(deep=false){const n=new Element(this.id);n.tagName=this.tagName;n.className=this.className;n.dataset={...this.dataset};n._text=this._text;n._html=this._html;if(deep)this.children.forEach(x=>n.appendChild(x.cloneNode?x.cloneNode(true):x));return n} getTotalLength(){return 300}
 }
 function serialize(e){return e&&e.nodeType===3?{type:'text',text:e.textContent}:{type:'element',id:e.id||'',tag:(e.tagName||'view').toLowerCase(),className:e.className||'',textContent:e._text||'',innerHTML:e._html||'',hidden:!!e.hidden,disabled:!!e.disabled,dataset:e.dataset||{},attrs:e._attrs||{},style:Object.fromEntries(Object.entries(e.style||{}).filter(([k])=>k!=='el'&&k!=='_cssText')),children:(e.children||[]).map(serialize)}}
 function textNode(v){return{nodeType:3,textContent:String(v),cloneNode(){return textNode(this.textContent)}}}
@@ -30,7 +30,8 @@ const document={body,documentElement:get('__html'),activeElement:null,fonts:{rea
 const window={devicePixelRatio:viewport.dpr(),get innerWidth(){return viewport.width()},get innerHeight(){return viewport.height()},performance:{now:()=>Date.now()},navigator:{language:'zh-CN'},location:{search:''},requestAnimationFrame:(fn)=>setTimeout(()=>fn(Date.now()),16),cancelAnimationFrame:(id)=>clearTimeout(id),addEventListener(){},removeEventListener(){},matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}})};
 function setRect(id,r){const e=get(id);e._rect={...r,right:r.right??r.left+r.width,bottom:r.bottom??r.top+r.height,x:r.x??r.left,y:r.y??r.top}}
 function tree(id){return get(id).children.map(serialize)}
-module.exports={document,window,Element,bindPage,hydrate,get,setRect,tree};
+function getComputedStyle(el){return{minHeight:(el&&el.style&&el.style.minHeight)||((el&&el.getBoundingClientRect().height)||0)+'px'}}
+module.exports={document,window,Element,bindPage,hydrate,get,setRect,tree,getComputedStyle};
 
 function Image(){this.src='';this.width=0;this.height=0}
 module.exports.Image=Image;
