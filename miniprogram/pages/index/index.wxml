@@ -1,3 +1,13 @@
+
+<template name="dom-tree">
+  <block wx:for="{{nodes}}" wx:key="index">
+    <text wx:if="{{item.type==='text'}}">{{item.text}}</text>
+    <view wx:else class="{{item.className}}" hidden="{{item.hidden}}" data-dom-dyn-index="{{index}}" style="grid-row:{{item.style.gridRow}};grid-column:{{item.style.gridColumn}};opacity:{{item.style.opacity}};transform:{{item.style.transform}};top:{{item.style.top}};left:{{item.style.left}};width:{{item.style.width}};height:{{item.style.height}};">
+      <text wx:if="{{item.textContent}}">{{item.textContent}}</text>
+      <template wx:if="{{item.children.length}}" is="dom-tree" data="{{nodes:item.children}}"/>
+    </view>
+  </block>
+</template>
 <view id="app" bindtap="domEvent" data-dom-id="app">
     
     <view id="screen-title" class="screen is-active" data-dom-id="screen-title">
@@ -29,7 +39,7 @@
       </view>
       <view class="quest-card" id="quests" data-dom-id="quests">
         <view class="quest-head"><text id="quest-title" data-i18n="todayQuests" data-dom-id="quest-title">今日任务</text><text class="quest-reward" id="quest-reward" data-dom-id="quest-reward"></text></view>
-        <view class="quest-list" id="quest-list" data-dom-id="quest-list"></view>
+        <view class="quest-list" id="quest-list" data-dom-id="quest-list"><template is="dom-tree" data="{{nodes:dom['quest-list'].children}}"/></view>
       </view>
       <view class="cal-card" id="calendar" data-dom-id="calendar">
         <view class="cal-head">
@@ -37,9 +47,9 @@
           <text id="cal-title" data-i18n="calendarTitle" data-dom-id="cal-title">出勤打卡日历</text>
           <button class="cal-nav" id="cal-next" data-i18n-aria="calNextMonth" data-dom-id="cal-next">›</button>
         </view>
-        <view class="cal-badges" id="cal-badges" data-dom-id="cal-badges"></view>
+        <view class="cal-badges" id="cal-badges" data-dom-id="cal-badges"><template is="dom-tree" data="{{nodes:dom['cal-badges'].children}}"/></view>
         <view class="cal-week" id="cal-week" data-dom-id="cal-week"><text>日</text><text>一</text><text>二</text><text>三</text><text>四</text><text>五</text><text>六</text></view>
-        <view class="cal-grid" id="cal-grid" data-dom-id="cal-grid"></view>
+        <view class="cal-grid" id="cal-grid" data-dom-id="cal-grid"><template is="dom-tree" data="{{nodes:dom['cal-grid'].children}}"/></view>
       </view>
       <text class="hint" data-i18n="keyboardHint">支持使用数字键和退格键（Backspace）作答</text>
     </view>
@@ -53,7 +63,7 @@
       </view>
       <text class="tree-stars" id="tree-stars" data-dom-id="tree-stars"></text>
       <text class="tree-note" data-i18n="treeNote">轻按练习（达到 ☆ 条件可掌握）· 长按可重置该技能及后续节点</text>
-      <view class="tree-scroll" id="tree-scroll" data-dom-id="tree-scroll"><view class="tree-lanes" id="tree-lanes" data-dom-id="tree-lanes"></view><view class="tree" id="tree" data-dom-id="tree"><view class="svg-slot"></view></view></view>
+      <view class="tree-scroll" id="tree-scroll" data-dom-id="tree-scroll"><view class="tree-lanes" id="tree-lanes" data-dom-id="tree-lanes"><template is="dom-tree" data="{{nodes:dom['tree-lanes'].children}}"/></view><view class="tree" id="tree" data-dom-id="tree"><view class="svg-slot"><template is="dom-tree" data="{{nodes:dom['tree'].children}}"/></view></view></view>
       <text class="toast" id="toast" hidden="{{true}}" data-dom-id="toast"></text>
     </view>
 
@@ -67,7 +77,7 @@
       <view class="tr-filter">
         <button data-f="all" data-i18n="trFilterAll">全部</button><button data-f="got" data-i18n="trFilterGot">已获得</button><button data-f="next" data-i18n="trFilterNext">未获得</button><button data-f="soon" data-i18n="trFilterSoon">即将达成</button>
       </view>
-      <view class="tr-scroll" id="tr-scroll" data-dom-id="tr-scroll"><view class="tr-list" id="tr-list" data-dom-id="tr-list"></view></view>
+      <view class="tr-scroll" id="tr-scroll" data-dom-id="tr-scroll"><view class="tr-list" id="tr-list" data-dom-id="tr-list"><template is="dom-tree" data="{{nodes:dom['tr-list'].children}}"/></view></view>
     </view>
 
     
@@ -78,14 +88,14 @@
         <text class="tree-count" id="collect-count" data-dom-id="collect-count"></text>
       </view>
       <view class="co-preview" id="co-preview" data-dom-id="co-preview"><view class="stamp co-mark" id="co-mark" data-dom-id="co-mark"></view><text class="co-now" id="co-now" data-dom-id="co-now"></text></view>
-      <view class="co-tabs" id="co-tabs" data-dom-id="co-tabs"></view>
-      <view class="co-scroll" id="co-scroll" data-dom-id="co-scroll"><text class="co-note" id="co-note" data-i18n="collectNote" data-dom-id="co-note">在此选择游戏中生效的视觉外观、音乐与终场特效（选择“随机”每次将自动随机）</text><view class="co-grid" id="co-grid" data-dom-id="co-grid"></view></view>
+      <view class="co-tabs" id="co-tabs" data-dom-id="co-tabs"><template is="dom-tree" data="{{nodes:dom['co-tabs'].children}}"/></view>
+      <view class="co-scroll" id="co-scroll" data-dom-id="co-scroll"><text class="co-note" id="co-note" data-i18n="collectNote" data-dom-id="co-note">在此选择游戏中生效的视觉外观、音乐与终场特效（选择“随机”每次将自动随机）</text><view class="co-grid" id="co-grid" data-dom-id="co-grid"><template is="dom-tree" data="{{nodes:dom['co-grid'].children}}"/></view></view>
     </view>
 
     
     <view id="screen-play" class="screen" data-dom-id="screen-play">
       <view class="hud">
-        <view class="pips" id="pips" data-dom-id="pips"></view>
+        <view class="pips" id="pips" data-dom-id="pips"><template is="dom-tree" data="{{nodes:dom['pips'].children}}"/></view>
         <view class="clock"><text id="clock-label" data-dom-id="clock-label">目标 2:40</text><text id="clock" data-dom-id="clock">0:00</text></view>
         <text class="demo-tag" data-i18n="demoTag">演示模式</text>
         <button class="icon-btn" id="mute" data-i18n-aria="muteBtnAria" data-dom-id="mute">♪</button>
@@ -103,7 +113,7 @@
       <view class="card" id="card" data-dom-id="card">
         <view class="marquee"></view>
         <view class="card-top"><text class="chip" id="qtitle" data-dom-id="qtitle">加法</text><text class="qno" id="qno" data-dom-id="qno">第 1 题</text></view>
-        <view class="sheet-wrap"><view class="sheet" id="sheet" data-dom-id="sheet"></view></view>
+        <view class="sheet-wrap"><view class="sheet" id="sheet" data-dom-id="sheet"><template is="dom-tree" data="{{nodes:dom['sheet'].children}}"/></view></view>
         <text class="step-label" id="step-label" data-dom-id="step-label">个位</text>
         <view class="stamp" id="stamp" data-dom-id="stamp"></view>
         <view class="reach-tag" id="reach-tag" data-dom-id="reach-tag">还剩 1 格</view>
