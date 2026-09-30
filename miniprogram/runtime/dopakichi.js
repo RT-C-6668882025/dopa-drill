@@ -1,3 +1,6 @@
+const dom=require('../platform/dom');
+const document=dom.document;
+const Image=dom.Image;
 // Dopakichi: a rubber-hose mascot drawn as layered SVG in screen space.
 // Shapes follow docs/dopakichi.svg, converted to unit space (feet at y=0).
 // Body parts are springs; actions are cancellable async routines.
