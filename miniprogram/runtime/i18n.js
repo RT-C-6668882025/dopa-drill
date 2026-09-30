@@ -1,4 +1,5 @@
 const storage=require('../platform/storage');
+const runtime=require('../platform/runtime');
 // Lightweight native i18n module for dopa-drill (zero external dependencies).
 // Supports 'zh' (Simplified Chinese), 'ja' (Japanese), and 'en' (English).
 
@@ -13,7 +14,7 @@ const SUPPORTED_LANGS = [
 // Active language state. Default is Chinese ('zh').
 let currentLang = (() => {
   try {
-    const urlLang = storage.getItem('__query_lang__');
+    const urlLang = runtime.params.get('lang');
     if (urlLang && ['zh', 'ja', 'en'].includes(urlLang)) return urlLang;
     const saved = storage.getItem(STORAGE_KEY);
     if (saved && ['zh', 'ja', 'en'].includes(saved)) return saved;
