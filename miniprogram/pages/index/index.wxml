@@ -124,10 +124,10 @@
         <view class="reach-tag" id="reach-tag" data-dom-id="reach-tag">还剩 1 格</view>
       </view>
       <view class="pad" id="pad" data-dom-id="pad">
-        <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
-        <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
-        <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
-        <button data-key="Backspace" class="del">⌫</button><button data-key="0" class="zero">0</button>
+        <button data-dom-id="pad-7" data-key="7">7</button><button data-dom-id="pad-8" data-key="8">8</button><button data-dom-id="pad-9" data-key="9">9</button>
+        <button data-dom-id="pad-4" data-key="4">4</button><button data-dom-id="pad-5" data-key="5">5</button><button data-dom-id="pad-6" data-key="6">6</button>
+        <button data-dom-id="pad-1" data-key="1">1</button><button data-dom-id="pad-2" data-key="2">2</button><button data-dom-id="pad-3" data-key="3">3</button>
+        <button data-dom-id="pad-backspace" data-key="Backspace" class="del">⌫</button><button data-dom-id="pad-0" data-key="0" class="zero">0</button>
       </view>
     </view>
 
