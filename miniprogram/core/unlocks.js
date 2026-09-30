@@ -2,7 +2,7 @@
 // Dopakichi's costume and colour, the crowd and the finale. Each item is the
 // reward of one trophy (never random), so what is unlocked follows from the
 // trophies earned; only the player's choice per category is saved.
-const TROPHY = {};
+const { TROPHY }=require('./trophies');
 
 const CATS = [
   { key: 'bg', name: 'はいけい' },
@@ -107,4 +107,4 @@ function pickLook(equip = {}, got = {}, rng = Math.random) {
 // The part after "cat:" (what the show modules switch on).
 const variant = (id) => (id ? id.split(':')[1] : 'classic');
 
-module.exports={CATS,ITEMS,ITEM,isUnlocked,unlockedIn,defaultEquip,pickLook,variant};
+module.exports={CATS,ITEMS,ITEM,addItems,isUnlocked,unlockedIn,defaultEquip,pickLook,variant};
