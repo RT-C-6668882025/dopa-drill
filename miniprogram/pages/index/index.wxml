@@ -1,53 +1,8 @@
-<view class="page {{celebrating ? 'celebrating' : ''}}">
-  <view class="topbar">
-    <view>
-      <text class="brand">多帕速算</text>
-      <text class="sub">DOPA DRILL · 微信小程序版</text>
-    </view>
-    <view class="pill">BEST {{bestScore}}</view>
-  </view>
-
-  <view class="stage">
-    <view class="spotlight s1"></view>
-    <view class="spotlight s2"></view>
-    <view class="confetti" wx:if="{{celebrating}}">✦　●　▲　✦　■　●</view>
-
-    <view class="mascot">
-      <view class="ear left"></view><view class="ear right"></view>
-      <view class="face">
-        <view class="eye"></view><view class="eye"></view>
-        <view class="mouth">{{celebrating ? 'ᴗ' : '⌣'}}</view>
-      </view>
-    </view>
-
-    <text class="combo" wx:if="{{combo > 1}}">{{combo}} COMBO!</text>
-    <text class="dopa">DOPA × {{dopa}}</text>
-
-    <view class="problem-card">
-      <text class="mode">{{modeLabel}}</text>
-      <view class="problem">
-        <text>{{a}}</text><text class="op">{{op}}</text><text>{{b}}</text><text class="eq">=</text>
-        <text class="answer {{feedback}}">{{answer || '?'}}</text>
-      </view>
-      <text class="hint">{{hint}}</text>
-    </view>
-  </view>
-
-  <view class="stats">
-    <view><text class="n">{{score}}</text><text class="l">SCORE</text></view>
-    <view><text class="n">{{correct}}</text><text class="l">CORRECT</text></view>
-    <view><text class="n">{{streak}}</text><text class="l">STREAK</text></view>
-  </view>
-
-  <view class="keypad">
-    <button class="key" wx:for="{{keys}}" wx:key="*this" data-key="{{item}}" bindtap="tapKey">{{item}}</button>
-    <button class="key utility" bindtap="backspace">⌫</button>
-    <button class="key zero" data-key="0" bindtap="tapKey">0</button>
-    <button class="key utility" bindtap="skip">↻</button>
-  </view>
-
-  <view class="footer">
-    <button class="mode-btn" bindtap="changeMode">{{modeLabel}}</button>
-    <button class="mode-btn" bindtap="toggleSound">声音 {{sound ? '开' : '关'}}</button>
-  </view>
+<view class="app">
+<view wx:if="{{screen==='home'}}" class="home"><view class="hero"><text class="logo">DOPA DRILL</text><text class="cn">多巴速算</text><text class="tag">把算术练习做成一场游戏。</text><button class="primary" bindtap="showSkills">开始训练</button></view><view class="summary"><view><b>{{stats.problems||0}}</b><small>已完成题目</small></view><view><b>{{stats.maxCombo||0}}</b><small>最高 COMBO</small></view><view><b>{{stats.bestScore||0}}</b><small>最高分</small></view></view><view class="nav"><button bindtap="showSkills">技能树</button><button bindtap="showHistory">历史</button><button bindtap="showSettings">设置</button></view></view>
+<view wx:elif="{{screen==='skills'}}"><view class="bar"><button bindtap="showHome">‹</button><text>技能树 · {{grade}} 年级</text></view><scroll-view scroll-x class="grades"><button wx:for="{{grades}}" wx:key="*this" class="{{grade===item?'on':''}}" data-grade="{{item}}" bindtap="pickGrade">{{item}}年级</button></scroll-view><scroll-view scroll-y class="skillscroll"><view wx:for="{{skills}}" wx:key="id" class="skill {{item.locked?'locked':''}} {{item.mastered?'mastered':''}}" data-id="{{item.id}}" bindtap="pickSkill"><view><text class="lane">{{item.laneName}}</text><text class="skillname">{{item.name}}</text></view><view class="stars">{{item.locked?'🔒':item.starText}}</view></view></scroll-view></view>
+<view wx:elif="{{screen==='play'}}" class="play"><view class="playtop"><button bindtap="showSkills">×</button><text>{{skill.name}}</text><text>{{done+1}} / {{count}}</text></view><view class="meters"><text>{{score}} PT</text><text wx:if="{{combo>1}}">{{combo}} COMBO</text></view><view class="paper"><text class="ptitle">{{problem.title}}</text><view class="grid" style="{{gridStyle}}"><view wx:for="{{cells}}" wx:key="id" class="cell {{item.kind}} {{item.active?'active':''}} {{item.hidden?'hidden':''}}" style="{{item.style}}">{{item.text}}</view></view><text class="feedback {{feedback}}">{{feedback==='complete'?'✓ 正解':feedback==='ng'?'× 再试行':hint}}</text></view><view class="keypad"><button wx:for="{{keys}}" wx:key="*this" data-key="{{item}}" bindtap="tapKey">{{item}}</button><button class="zero" data-key="0" bindtap="tapKey">0</button></view></view>
+<view wx:elif="{{screen==='result'}}" class="result"><text class="big">训练完成</text><text class="score">{{score}} PT</text><text>{{skill.name}} · {{done}} 题</text><button class="primary" bindtap="showSkills">返回技能树</button></view>
+<view wx:elif="{{screen==='history'}}"><view class="bar"><button bindtap="showHome">‹</button><text>训练历史</text></view><scroll-view scroll-y class="skillscroll"><view wx:for="{{history}}" wx:key="at" class="history"><text>{{item.name}}</text><b>{{item.score}} PT</b><small>{{item.count}}题 · 错误 {{item.errors}}</small></view><text wx:if="{{!history.length}}" class="empty">还没有训练记录。</text></scroll-view></view>
+<view wx:elif="{{screen==='settings'}}"><view class="bar"><button bindtap="showHome">‹</button><text>设置</text></view><view class="settings"><text class="label">每轮题数</text><view class="choices"><button data-count="6" bindtap="changeCount" class="{{count===6?'on':''}}">6</button><button data-count="10" bindtap="changeCount" class="{{count===10?'on':''}}">10</button><button data-count="14" bindtap="changeCount" class="{{count===14?'on':''}}">14</button></view><button bindtap="toggleSound">声音 {{settings.sound?'开':'关'}}</button><button bindtap="toggleVibration">震动 {{settings.vibration?'开':'关'}}</button><button class="danger" bindtap="resetAll">清除全部记录</button></view></view>
 </view>
