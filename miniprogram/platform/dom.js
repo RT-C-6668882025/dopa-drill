@@ -22,6 +22,6 @@ class Element{
 function get(id){if(!registry.has(id))registry.set(id,new Element(id));return registry.get(id)}
 const body=get('__body');
 const document={body,documentElement:get('__html'),createElement:(tag)=>new Element(),createElementNS:(ns,tag)=>new Element(),querySelector(sel){sel=norm(sel);if(sel.startsWith('#'))return get(sel.slice(1).split(/[ .:[>]/)[0]);return get(sel)},querySelectorAll(sel){sel=norm(sel);if(sel==='.screen')return ['title','tree','trophy','collect','play','result','final'].map(x=>get('screen-'+x));if(sel==='#pad button')return [];return []}};
-const window={devicePixelRatio:viewport.dpr(),innerWidth:viewport.width(),innerHeight:viewport.height(),addEventListener(){},removeEventListener(){}};
+const window={devicePixelRatio:viewport.dpr(),get innerWidth(){return viewport.width()},get innerHeight(){return viewport.height()},performance:{now:()=>Date.now()},navigator:{language:'zh-CN'},location:{search:''},requestAnimationFrame:(fn)=>setTimeout(()=>fn(Date.now()),16),cancelAnimationFrame:(id)=>clearTimeout(id),addEventListener(){},removeEventListener(){}};
 function setRect(id,r){const e=get(id);e._rect={...r,right:r.right??r.left+r.width,bottom:r.bottom??r.top+r.height,x:r.x??r.left,y:r.y??r.top}}
 module.exports={document,window,Element,bindPage,get,setRect};
