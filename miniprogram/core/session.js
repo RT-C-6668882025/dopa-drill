@@ -301,7 +301,7 @@ function problemFor(prog, skillId, rng) {
   return p;
 }
 
-
+export { signature };
 
 // ---------------------------------------------------------------- time capsule (id039)
 // A problem from the child's first days with a skill comes back once it is
@@ -324,4 +324,4 @@ function useCapsule(prog, skill, index, at = Date.now()) {
   return !!e;
 }
 
-module.exports={ORDER,PLACEMENT,TREE_SUB,TREE_UPPER,TREE_LAYOUT,emptyProgress,isMastered,isUnlocked,stateOf,masterWithAncestors,TIMES_MAX,FIRST_MAX,DAYS_MAX,recordResult,RUST,rustyOf,STAR_MAX,STAR_RULE,baseMs,starsOf,updateStars,nextStar,dependents,relockTargets,relockSkill,masteryRatio,gradePlan,frontier,levelPlan,placementPlan,reviewPlan,problemFor,CAPSULE,pickCapsule,useCapsule,signature};
+module.exports={ORDER,PLACEMENT,TREE_SUB,TREE_UPPER,TREE_LAYOUT,emptyProgress,isMastered,isUnlocked,stateOf,masterWithAncestors,TIMES_MAX,FIRST_MAX,DAYS_MAX,recordResult,RUST,rustyOf,STAR_MAX,STAR_RULE,baseMs,starsOf,updateStars,nextStar,dependents,relockTargets,relockSkill,masteryRatio,gradePlan,frontier,levelPlan,placementPlan,reviewPlan,problemFor,CAPSULE,pickCapsule,useCapsule};
