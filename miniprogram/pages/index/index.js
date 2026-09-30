@@ -6,6 +6,16 @@ Page({
  onLoad(options){dom.bindPage(this);runtime.setQuery(options||{});this.measure();},
  onReady(){this.bindCanvas().then(()=>{try{require('../../runtime/main')}catch(e){console.error('dopa main boot',e)}})},
  onShow(){this.measure()},
+  renderActors(){
+    const q=wx.createSelectorQuery().in(this);
+    q.select('#actors').fields({node:true,size:true},r=>{
+      if(!r||!r.node)return;const info=wx.getWindowInfo?wx.getWindowInfo():wx.getSystemInfoSync(),dpr=info.pixelRatio||1;
+      if(r.node.width!==r.width*dpr||r.node.height!==r.height*dpr){r.node.width=r.width*dpr;r.node.height=r.height*dpr}
+      const ctx=r.node.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,r.width,r.height);
+      const back=dom.tree('actors-back'),front=dom.tree('actors-front');
+      for(const n of back)svgCanvas.drawNode(ctx,n);for(const n of front)svgCanvas.drawNode(ctx,n);
+    }).exec();
+  },
   renderSvgTree(id,tree){
     const q=wx.createSelectorQuery().in(this);
     q.select('[data-svg-id="'+id+'"]').fields({node:true,size:true},r=>{
