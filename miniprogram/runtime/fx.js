@@ -1,3 +1,4 @@
+const viewport=require('../platform/viewport');
 // Canvas 2D particle layer: paper confetti, stars, sparks, coins, fireworks,
 // streamers, mini Dopakichi sprites and floating score text.
 const { rand, pick, clamp }=require('./core');
@@ -21,8 +22,8 @@ class FX {
     this.sprites = ['pink', 'blue', 'yellow', 'mint', 'violet'].map((p) => dopakichiSprite(p, 96));
   }
   resize() {
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const w = Math.round(innerWidth * dpr); const h = Math.round(innerHeight * dpr);
+    const dpr = Math.min(2, viewport.dpr());
+    const w = Math.round(viewport.width() * dpr); const h = Math.round(viewport.height() * dpr);
     if (this.canvas.width !== w || this.canvas.height !== h) { this.canvas.width = w; this.canvas.height = h; }
     this.dpr = dpr;
   }
@@ -83,7 +84,7 @@ class FX {
   }
 
   update(dt) {
-    const H = innerHeight + 200;
+    const H = viewport.height() + 200;
     for (const p of this.parts) {
       p.age += dt;
       if (p.kind === 'shell') {
@@ -91,7 +92,7 @@ class FX {
         const k = clamp((p.age - p.t0) / 0.55);
         const ease = 1 - (1 - k) ** 3;
         p.x = p.x + (p.tx - p.x) * Math.min(1, dt * 8);
-        p.y = innerHeight + 20 + (p.ty - innerHeight - 20) * ease;
+        p.y = viewport.height() + 20 + (p.ty - viewport.height() - 20) * ease;
         if (k >= 1 && !p.done) {
           p.done = true; p.life = 0;
           const col = p.color; const n = 46;
