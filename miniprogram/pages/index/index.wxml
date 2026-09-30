@@ -1,3 +1,7 @@
+<view id="paper" data-dom-id="paper"></view>
+<view id="rays-fallback" data-dom-id="rays-fallback"></view>
+<canvas type="webgl" id="bg" data-dom-id="bg"></canvas>
+<canvas type="2d" id="fx-back" data-dom-id="fx-back"></canvas>
 
 <template name="dom-tree">
   <block wx:for="{{nodes}}" wx:key="index">
