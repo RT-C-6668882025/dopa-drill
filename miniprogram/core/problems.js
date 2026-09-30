@@ -3,7 +3,7 @@
 // is one digit typed into one cell. Layout families:
 //   column add/sub (with decimals), column multiplication, long division,
 //   and horizontal expressions (integers, decimals, fractions, remainders).
-const { SKILL } = require('./skills');
+const { SKILL }=require('./skills');
 
 function makeRng(seed) {
   let s = seed >>> 0;
@@ -657,4 +657,4 @@ function generate(template, rng, fixed) {
 
 const _internal = { buildAdd, buildSub, buildMul, buildDiv, buildH, GEN, decStr };
 
-module.exports = { makeRng, signature, makeProblem, BASIC_SETS, EXTRA_TIERS, generate, _internal };
+module.exports={makeRng,signature,makeProblem,BASIC_SETS,EXTRA_TIERS,generate,_internal};
