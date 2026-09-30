@@ -1,0 +1,14 @@
+{
+  "description": "Dopa Drill 微信小程序版",
+  "miniprogramRoot": "miniprogram/",
+  "setting": {
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": false
+  },
+  "compileType": "miniprogram",
+  "appid": "touristappid",
+  "projectname": "dopa-drill-wechat"
+}

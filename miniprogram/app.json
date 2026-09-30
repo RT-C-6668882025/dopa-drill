@@ -1,0 +1,11 @@
+{
+  "pages": ["pages/index/index"],
+  "window": {
+    "navigationBarTitleText": "多帕速算",
+    "navigationBarBackgroundColor": "#fff7df",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#fff7df"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

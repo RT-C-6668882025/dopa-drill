@@ -1,0 +1,193 @@
+<view id="paper" data-dom-id="paper"></view>
+<view id="rays-fallback" data-dom-id="rays-fallback"></view>
+<canvas type="webgl" id="bg" data-dom-id="bg"></canvas>
+<canvas type="2d" id="fx-back" data-dom-id="fx-back"></canvas>
+
+<template name="dom-tree">
+  <block wx:for="{{nodes}}" wx:key="index">
+    <text wx:if="{{item.type==='text'}}">{{item.text}}</text>
+    <canvas wx:elif="{{item.tag==='svg'}}" type="2d" class="{{item.className}} svg-dynamic" data-svg-id="{{item.id}}"></canvas>
+    <view wx:else class="{{item.className}}" hidden="{{item.hidden}}" data-dom-dyn-index="{{index}}" style="grid-row:{{item.style.gridRow}};grid-column:{{item.style.gridColumn}};opacity:{{item.style.opacity}};transform:{{item.style.transform}};top:{{item.style.top}};left:{{item.style.left}};width:{{item.style.width}};height:{{item.style.height}};">
+      <text wx:if="{{item.textContent}}">{{item.textContent}}</text>
+      <template wx:if="{{item.children.length}}" is="dom-tree" data="{{nodes:item.children}}"/>
+    </view>
+  </block>
+</template>
+<view id="app" bindtap="domEvent" bindtouchstart="domTouchStart" bindtouchmove="domTouchMove" bindtouchend="domTouchEnd" data-dom-id="app">
+    
+    <view id="screen-title" class="screen is-active" data-dom-id="screen-title">
+      <button class="icon-btn settings-btn" id="open-settings" data-i18n-aria="settingsBtnAria" data-dom-id="open-settings">
+        <view class="svg-host"></view>
+      </button>
+      <button class="icon-btn settings-btn help-btn" id="open-guide" data-i18n-aria="helpBtnAria" data-dom-id="open-guide">
+        <view class="svg-host"></view>
+      </button>
+      <text id="logo" class="logo" data-dom-id="logo">
+        <view class="svg-host"></view>
+        <text class="logo-top"><text data-c="多">多</text><text data-c="帕">帕</text></text>
+        <text class="logo-ribbon"><view class="svg-host"></view><text>速</text><text>算</text></text>
+        <text class="logo-bits"><text style="x:-46%;y:4%;r:-18deg;c:#3fdcb0">＋</text><text style="x:44%;y:-2%;r:14deg;c:#a77bff">×</text><text style="x:-34%;y:104%;r:10deg;c:#ff4f6d">÷</text><text style="x:36%;y:102%;r:-12deg;c:#ffd23f">−</text></text>
+      </text>
+      <view class="title-stage" id="title-stage" data-dom-id="title-stage"></view>
+      <view class="modes" id="modes" data-dom-id="modes">
+        <button id="start" class="big-btn level-btn" data-dom-id="start"><text data-i18n="myLevel">个性化闯关</text><text id="level-sub" data-i18n="myLevelSub" data-dom-id="level-sub">首次游玩将进行实力诊断测试</text></button>
+        <button id="start-review" class="sub-btn review-btn review-main" hidden="{{true}}" data-dom-id="start-review"><text data-i18n="review">巩固错题</text> <text id="review-count" data-dom-id="review-count">0</text></button>
+        <view class="grades" id="grades" data-dom-id="grades" data-i18n-aria="gradeGroupAria">
+          <button data-dom-id="grade-1" data-grade="1">1<text data-i18n="grade1">年级</text></button><button data-dom-id="grade-2" data-grade="2">2<text data-i18n="grade2">年级</text></button><button data-dom-id="grade-3" data-grade="3">3<text data-i18n="grade3">年级</text></button>
+          <button data-dom-id="grade-4" data-grade="4">4<text data-i18n="grade4">年级</text></button><button data-dom-id="grade-5" data-grade="5">5<text data-i18n="grade5">年级</text></button><button data-dom-id="grade-6" data-grade="6">6<text data-i18n="grade6">年级</text></button>
+        </view>
+        <view class="mode-row">
+          <button id="open-tree" class="sub-btn" data-dom-id="open-tree"><text data-i18n="skillTree">技能树</text> <text id="tree-badge" data-dom-id="tree-badge"></text></button>
+          <button id="open-trophy" class="sub-btn" data-dom-id="open-trophy"><text data-i18n="trophy">成就奖杯</text> <text id="trophy-badge" data-dom-id="trophy-badge"></text></button>
+          <button id="open-collect" class="sub-btn" data-dom-id="open-collect"><text data-i18n="collection">收藏展示</text> <text id="collect-badge" data-dom-id="collect-badge"></text></button>
+        </view>
+      </view>
+      <view class="quest-card" id="quests" data-dom-id="quests">
+        <view class="quest-head"><text id="quest-title" data-i18n="todayQuests" data-dom-id="quest-title">今日任务</text><text class="quest-reward" id="quest-reward" data-dom-id="quest-reward"></text></view>
+        <view class="quest-list" id="quest-list" data-dom-id="quest-list"><template is="dom-tree" data="{{nodes:dom['quest-list'].children}}"/></view>
+      </view>
+      <view class="cal-card" id="calendar" data-dom-id="calendar">
+        <view class="cal-head">
+          <button class="cal-nav" id="cal-prev" data-i18n-aria="calPrevMonth" data-dom-id="cal-prev">‹</button>
+          <text id="cal-title" data-i18n="calendarTitle" data-dom-id="cal-title">出勤打卡日历</text>
+          <button class="cal-nav" id="cal-next" data-i18n-aria="calNextMonth" data-dom-id="cal-next">›</button>
+        </view>
+        <view class="cal-badges" id="cal-badges" data-dom-id="cal-badges"><template is="dom-tree" data="{{nodes:dom['cal-badges'].children}}"/></view>
+        <view class="cal-week" id="cal-week" data-dom-id="cal-week"><text>日</text><text>一</text><text>二</text><text>三</text><text>四</text><text>五</text><text>六</text></view>
+        <view class="cal-grid" id="cal-grid" data-dom-id="cal-grid"><template is="dom-tree" data="{{nodes:dom['cal-grid'].children}}"/></view>
+      </view>
+      <text class="hint" data-i18n="keyboardHint">支持使用数字键和退格键（Backspace）作答</text>
+    </view>
+
+    
+    <view id="screen-tree" class="screen" data-dom-id="screen-tree">
+      <view class="tree-head">
+        <button class="icon-btn" id="tree-back" data-i18n-aria="treeBackAria" data-dom-id="tree-back">‹</button>
+        <text id="tree-title" data-i18n="treeHeadTitle" data-dom-id="tree-title">技能树</text>
+        <text class="tree-count" id="tree-count" data-dom-id="tree-count"></text>
+      </view>
+      <text class="tree-stars" id="tree-stars" data-dom-id="tree-stars"></text>
+      <text class="tree-note" data-i18n="treeNote">轻按练习（达到 ☆ 条件可掌握）· 长按可重置该技能及后续节点</text>
+      <view class="tree-scroll" id="tree-scroll" data-dom-id="tree-scroll"><view class="tree-lanes" id="tree-lanes" data-dom-id="tree-lanes"><template is="dom-tree" data="{{nodes:dom['tree-lanes'].children}}"/></view><view class="tree" id="tree" data-dom-id="tree"><template is="dom-tree" data="{{nodes:dom['tree'].children}}"/></view></view>
+      <text class="toast" id="toast" hidden="{{true}}" data-dom-id="toast"></text>
+    </view>
+
+    
+    <view id="screen-trophy" class="screen" data-dom-id="screen-trophy">
+      <view class="tree-head">
+        <button class="icon-btn" id="trophy-back" data-i18n-aria="treeBackAria" data-dom-id="trophy-back">‹</button>
+        <text id="trophy-title" data-i18n="trophyHeadTitle" data-dom-id="trophy-title">成就奖杯</text>
+        <text class="tree-count" id="trophy-count" data-dom-id="trophy-count"></text>
+      </view>
+      <view class="tr-filter">
+        <button data-f="all" data-i18n="trFilterAll">全部</button><button data-f="got" data-i18n="trFilterGot">已获得</button><button data-f="next" data-i18n="trFilterNext">未获得</button><button data-f="soon" data-i18n="trFilterSoon">即将达成</button>
+      </view>
+      <view class="tr-scroll" id="tr-scroll" data-dom-id="tr-scroll"><view class="tr-list" id="tr-list" data-dom-id="tr-list"><template is="dom-tree" data="{{nodes:dom['tr-list'].children}}"/></view></view>
+    </view>
+
+    
+    <view id="screen-collect" class="screen" data-dom-id="screen-collect">
+      <view class="tree-head">
+        <button class="icon-btn" id="collect-back" data-i18n-aria="treeBackAria" data-dom-id="collect-back">‹</button>
+        <text id="collect-title" data-i18n="collectHeadTitle" data-dom-id="collect-title">宝物收藏库</text>
+        <text class="tree-count" id="collect-count" data-dom-id="collect-count"></text>
+      </view>
+      <view class="co-preview" id="co-preview" data-dom-id="co-preview"><view class="stamp co-mark" id="co-mark" data-dom-id="co-mark"></view><text class="co-now" id="co-now" data-dom-id="co-now"></text></view>
+      <view class="co-tabs" id="co-tabs" data-dom-id="co-tabs"><template is="dom-tree" data="{{nodes:dom['co-tabs'].children}}"/></view>
+      <view class="co-scroll" id="co-scroll" data-dom-id="co-scroll"><text class="co-note" id="co-note" data-i18n="collectNote" data-dom-id="co-note">在此选择游戏中生效的视觉外观、音乐与终场特效（选择“随机”每次将自动随机）</text><view class="co-grid" id="co-grid" data-dom-id="co-grid"><template is="dom-tree" data="{{nodes:dom['co-grid'].children}}"/></view></view>
+    </view>
+
+    
+    <view id="screen-play" class="screen" data-dom-id="screen-play">
+      <view class="hud">
+        <view class="pips" id="pips" data-dom-id="pips"><template is="dom-tree" data="{{nodes:dom['pips'].children}}"/></view>
+        <view class="clock"><text id="clock-label" data-dom-id="clock-label">目标 2:40</text><text id="clock" data-dom-id="clock">0:00</text></view>
+        <text class="demo-tag" data-i18n="demoTag">演示模式</text>
+        <button class="icon-btn" id="mute" data-i18n-aria="muteBtnAria" data-dom-id="mute">♪</button>
+      </view>
+      <view class="hud2">
+        <view class="tally"><text><text data-i18n="correctCount">正确</text> <text id="ok" data-dom-id="ok">0</text><text id="ok-total" data-dom-id="ok-total">/10</text></text><text class="ng"><text data-i18n="missCount">差一点</text> <text id="ng" data-dom-id="ng">0</text></text></view>
+        <view class="combo" id="combo-box" data-dom-id="combo-box"><text id="combo" data-dom-id="combo">0</text><text data-i18n="comboLabel">连击</text><text class="combo-mult" id="combo-mult" data-dom-id="combo-mult"></text><text class="combo-track"><text id="combo-bar" data-dom-id="combo-bar"></text></text></view>
+        <view class="dopa" id="dopa-box" data-dom-id="dopa-box"><text data-i18n="dopaLabel">多帕</text><text id="dopa" data-dom-id="dopa">0</text></view>
+      </view>
+      <view class="stage" id="stage" data-dom-id="stage">
+        <view class="svg-host"></view>
+        <view class="spot spot-l"></view><view class="spot spot-r"></view>
+        <view class="svg-host"></view>
+      </view>
+      <view class="card" id="card" data-dom-id="card">
+        <view class="marquee"></view>
+        <view class="card-top"><text class="chip" id="qtitle" data-dom-id="qtitle">加法</text><text class="qno" id="qno" data-dom-id="qno">第 1 题</text></view>
+        <view class="sheet-wrap"><view class="sheet" id="sheet" data-dom-id="sheet"><template is="dom-tree" data="{{nodes:dom['sheet'].children}}"/></view></view>
+        <text class="step-label" id="step-label" data-dom-id="step-label">个位</text>
+        <view class="stamp" id="stamp" data-dom-id="stamp"></view>
+        <view class="reach-tag" id="reach-tag" data-dom-id="reach-tag">还剩 1 格</view>
+      </view>
+      <view class="pad" id="pad" data-dom-id="pad">
+        <button data-dom-id="pad-7" data-key="7">7</button><button data-dom-id="pad-8" data-key="8">8</button><button data-dom-id="pad-9" data-key="9">9</button>
+        <button data-dom-id="pad-4" data-key="4">4</button><button data-dom-id="pad-5" data-key="5">5</button><button data-dom-id="pad-6" data-key="6">6</button>
+        <button data-dom-id="pad-1" data-key="1">1</button><button data-dom-id="pad-2" data-key="2">2</button><button data-dom-id="pad-3" data-key="3">3</button>
+        <button data-dom-id="pad-backspace" data-key="Backspace" class="del">⌫</button><button data-dom-id="pad-0" data-key="0" class="zero">0</button>
+      </view>
+    </view>
+
+    
+    <view id="screen-result" class="screen" data-dom-id="screen-result">
+      <view class="result-card">
+        <text class="chip" id="result-title" data-i18n="basicResultTitle" data-dom-id="result-title">基础练习完成</text>
+        <text class="score"><text id="r-score" data-dom-id="r-score">100</text><text data-i18n="pts">分</text></text>
+        <view class="stats">
+          <view><text data-i18n="correctCount">正确</text><text id="r-ok" data-dom-id="r-ok">10题</text></view>
+          <view><text data-i18n="missCount">差一点</text><text id="r-ng" data-dom-id="r-ng">0次</text></view>
+          <view><text data-i18n="accuracyLabel">初次正解率</text><text id="r-rate" data-dom-id="r-rate">100%</text></view>
+          <view><text data-i18n="timeLabel">用时</text><text id="r-time" data-dom-id="r-time">1:23</text></view>
+        </view>
+        <text class="dopa-final"><text data-i18n="dopaLabel">多帕</text><text id="r-dopa" data-dom-id="r-dopa">0</text></text>
+        <view class="growth-box" id="r-growth" data-dom-id="r-growth"></view>
+        <text class="unlock" id="r-unlock" data-dom-id="r-unlock"></text>
+        <view class="skill-news" id="r-skills" data-dom-id="r-skills"></view>
+        <view class="quest-mini" id="r-quests" data-dom-id="r-quests"></view>
+        <view class="actions">
+          <button id="go-extra" class="big-btn" data-dom-id="go-extra"><text data-i18n="btnGoExtra">挑战加时赛</text> <text data-i18n="btnGoExtraSub">90秒限时</text></button>
+          <button id="go-review" class="sub-btn review-btn" data-i18n="btnReviewMistakes" hidden="{{true}}" data-dom-id="go-review">重做错题</button>
+          <button id="go-tree" class="sub-btn" data-i18n="btnViewTree" hidden="{{true}}" data-dom-id="go-tree">查看技能树</button>
+          <button id="go-again" class="sub-btn" data-i18n="btnPlayAgain" hidden="{{true}}" data-dom-id="go-again">再来一次</button>
+          <button id="go-title" class="sub-btn" data-i18n="btnFinish" data-dom-id="go-title">结束返回</button>
+        </view>
+      </view>
+    </view>
+
+    
+    <view id="screen-final" class="screen" data-dom-id="screen-final">
+      <view class="result-card">
+        <text class="chip" id="final-title" data-i18n="finalResultTitle" data-dom-id="final-title">加时挑战结束</text>
+        <text class="score"><text id="f-score" data-dom-id="f-score">100</text><text data-i18n="pts">分</text></text>
+        <text class="breakdown" id="f-break" data-dom-id="f-break">基础 100 ＋ 挑战加分 0</text>
+        <view class="stats">
+          <view><text data-i18n="extraSolvedLabel">挑战答对</text><text id="f-ok" data-dom-id="f-ok">0题</text></view>
+          <view><text data-i18n="extraMissLabel">挑战失误</text><text id="f-ng" data-dom-id="f-ng">0次</text></view>
+          <view><text data-i18n="basicMissLabel">基础失误</text><text id="f-bng" data-dom-id="f-bng">0次</text></view>
+          <view><text data-i18n="basicTimeLabel">基础用时</text><text id="f-time" data-dom-id="f-time">0:00</text></view>
+        </view>
+        <text class="dopa-final"><text data-i18n="dopaLabel">多帕</text><text id="f-dopa" data-dom-id="f-dopa">0</text></text>
+        <view class="skill-news" id="f-skills" data-dom-id="f-skills"></view>
+        <view class="quest-mini" id="f-quests" data-dom-id="f-quests"></view>
+        <view class="actions">
+          <button id="f-review" class="sub-btn review-btn" data-i18n="btnReviewMistakes" hidden="{{true}}" data-dom-id="f-review">重做错题</button>
+          <button id="f-tree" class="sub-btn" data-i18n="btnViewTree" hidden="{{true}}" data-dom-id="f-tree">查看技能树</button>
+          <button id="again" class="big-btn" data-i18n="btnFinish" data-dom-id="again">结束返回</button>
+        </view>
+      </view>
+    </view>
+  </view>
+<view class="modal" id="settings" hidden="{{dom.settings.hidden}}" data-dom-id="settings"><view class="modal-card" data-dom-id="settings-card"><text id="settings-title" class="chip" data-dom-id="settings-title">系统设置</text><view class="set-row"><text class="set-label">语言 / Language</text><view class="lang-pick-group" id="lang-pick" data-dom-id="lang-pick"><button data-dom-id="lang-zh" data-lang="zh">中文</button><button data-dom-id="lang-ja" data-lang="ja">日本語</button><button data-dom-id="lang-en" data-lang="en">English</button></view></view><view class="set-row"><text class="set-label">每组题数</text><view class="pick" id="pick-count" data-dom-id="pick-count"><button data-dom-id="count-6" data-count="6">6题</button><button data-dom-id="count-10" data-count="10">10题</button><button data-dom-id="count-14" data-count="14">14题</button></view></view><view class="set-row"><text class="set-label">音效与音乐</text><button class="toggle" data-toggle="sound">♪ <text id="sound-state-text" data-dom-id="sound-state-text">开启</text></button><slider id="volume" min="0" max="100" value="80" data-dom-id="volume" bindinput="domInput" bindchange="domChange"/></view><view class="set-row"><text class="set-label">动态特效强度 <text id="motion-val" data-dom-id="motion-val">100%</text></text><slider id="motion" min="0" max="100" value="100" data-dom-id="motion" bindinput="domInput" bindchange="domChange"/><text class="set-note" id="motion-note" data-dom-id="motion-note">调至 0% 可关闭屏幕晃动、强光闪烁与纸屑飘落</text></view><view class="set-row"><button class="sub-btn demo-btn" id="demo-play" data-dom-id="demo-play">▶ 查看自动演示</button></view><view class="set-row"><button class="sub-btn danger reset-btn" id="reset-data" data-dom-id="reset-data">全部重置</button></view><button class="big-btn" id="close-settings" data-dom-id="close-settings">关闭</button></view></view>
+<view class="modal" id="bonus" hidden="{{dom.bonus.hidden}}" data-dom-id="bonus"><view class="modal-card bonus-card"><text id="bonus-title" class="chip" data-dom-id="bonus-title">每日登录奖励</text><text class="bonus-run" id="bonus-run" data-dom-id="bonus-run"></text><view class="bonus-card-grid" id="bonus-grid" data-dom-id="bonus-grid"><template is="dom-tree" data="{{nodes:dom['bonus-grid'].children}}"/></view><text class="bonus-note" id="bonus-note" data-dom-id="bonus-note">每天坚持算一算，多多练习更有劲！</text><button class="big-btn" id="bonus-ok" data-dom-id="bonus-ok">立即领取</button></view></view>
+<view class="modal" id="skill-info" hidden="{{dom['skill-info'].hidden}}" data-dom-id="skill-info"><view class="modal-card si-card"><text class="si-grade" id="si-grade" data-dom-id="si-grade"></text><text class="si-title" id="si-title" data-dom-id="si-title"></text><text class="si-stars" id="si-stars" data-dom-id="si-stars"></text><view class="si-next" id="si-next" data-dom-id="si-next"><template is="dom-tree" data="{{nodes:dom['si-next'].children}}"/></view><text class="si-note" id="si-note" data-dom-id="si-note"></text><view class="confirm-actions"><button class="sub-btn" id="si-close" data-dom-id="si-close">关闭</button><button class="sub-btn si-go" id="si-go" data-dom-id="si-go">专项练习</button></view></view></view>
+<view class="modal" id="trophy-got" hidden="{{dom['trophy-got'].hidden}}" data-dom-id="trophy-got"><view class="modal-card trophy-card"><text id="tg-title" class="chip" data-dom-id="tg-title">获得新成就！</text><text class="tg-sub" id="tg-sub" data-dom-id="tg-sub"></text><view class="tg-list" id="tg-list" data-dom-id="tg-list"><template is="dom-tree" data="{{nodes:dom['tg-list'].children}}"/></view><button class="big-btn" id="tg-ok" data-dom-id="tg-ok">太棒了！</button></view></view>
+<view class="modal" id="hammer" hidden="{{dom.hammer.hidden}}" data-dom-id="hammer"><view class="modal-card hammer-card"><text id="hammer-title" class="chip" data-dom-id="hammer-title">补签铁锤</text><view class="hammer-art" id="hammer-art" data-dom-id="hammer-art"></view><text class="hammer-msg" id="hammer-msg" data-dom-id="hammer-msg"></text><text class="hammer-have" id="hammer-have" data-dom-id="hammer-have"></text><view class="confirm-actions"><button class="sub-btn" id="hammer-no" data-dom-id="hammer-no">暂不使用</button><button class="sub-btn hammer-yes" id="hammer-yes" data-dom-id="hammer-yes">立即补签</button></view></view></view>
+<view class="modal" id="confirm" hidden="{{dom.confirm.hidden}}" data-dom-id="confirm"><view class="modal-card confirm-card"><text id="confirm-title" class="chip" data-dom-id="confirm-title">重置此技能进度</text><text class="confirm-msg" id="confirm-msg" data-dom-id="confirm-msg"></text><view class="confirm-list" id="confirm-list" data-dom-id="confirm-list"><template is="dom-tree" data="{{nodes:dom['confirm-list'].children}}"/></view><view class="confirm-actions"><button class="sub-btn" id="confirm-no" data-dom-id="confirm-no">取消</button><button class="sub-btn danger" id="confirm-yes" data-dom-id="confirm-yes">确认重置</button></view></view></view>
+<view class="modal" id="day-log" hidden="{{dom['day-log'].hidden}}" data-dom-id="day-log"><view class="modal-card"><text id="day-title" class="chip" data-dom-id="day-title">历史游玩记录</text><view class="day-list" id="day-list" data-dom-id="day-list"><template is="dom-tree" data="{{nodes:dom['day-list'].children}}"/></view><button class="big-btn" id="close-day" data-dom-id="close-day">关闭</button></view></view>
+<canvas type="2d" id="fx" data-dom-id="fx"></canvas>
+<canvas type="2d" id="actors" data-dom-id="actors"></canvas>
+<view id="actors-back" data-dom-id="actors-back"></view><view id="actors-front" data-dom-id="actors-front"></view>
+<view id="cutins" data-dom-id="cutins"><template is="dom-tree" data="{{nodes:dom.cutins.children}}"/></view><view id="flash" data-dom-id="flash"></view>

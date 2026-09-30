@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+const read=p=>fs.readFileSync(p,'utf8');
+const must=(ok,msg)=>{if(!ok)throw new Error(msg)};
+const main=read('miniprogram/runtime/main.js'), wxml=read('miniprogram/pages/index/index.wxml'), css=read('miniprogram/pages/index/index.wxss');
+for(const p of ['problems','skills','scoring','growth','quests','trophies','unlocks','session'])must(fs.existsSync('miniprogram/core/'+p+'.js'),'missing core '+p);
+for(const p of ['core','i18n','dopakichi','audio','fx','bg','guide','main'])must(fs.existsSync('miniprogram/runtime/'+p+'.js'),'missing runtime '+p);
+for(const id of ['bg','fx-back','fx','actors','settings','bonus','skill-info','trophy-got','hammer','confirm','day-log','cutins','flash','sheet','pad'])must(wxml.includes('id="'+id+'"'),'missing WXML #'+id);
+must(main.length>120000,'main controller was not migrated intact');
+must(css.length>50000,'stylesheet unexpectedly incomplete');
+must(!css.includes('2rpx solid var(--ink)'), 'reconstructed rpx stylesheet still present');
+for(const p of ['miniprogram/platform/core.js','miniprogram/platform/i18n.js'])must(!fs.existsSync(p),'duplicate reconstructed module '+p);
+console.log('mini program parity checks passed');
