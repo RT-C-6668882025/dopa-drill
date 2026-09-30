@@ -1,3 +1,4 @@
+const platformAudio=require('../platform/audio');
 // Procedural audio engine: every sound is synthesized with Web Audio.
 // All sound goes through play(name, when, params). In live mode it is rendered
 // immediately; in capture mode it is only logged so that the exact same score
@@ -500,16 +501,16 @@ class AudioEngine {
   unlock() {
     if (this.capture) return;
     if (!this.ctx) {
-      const AC = window.AudioContext || window.webkitAudioContext;
+      const AC = platformAudio.AudioContext;
       if (!AC) return;
-      this.ctx = new AC({ latencyHint: 'interactive' });
+      this.ctx = new AC();
       this.g = makeGraph(this.ctx);
       this.g.master.gain.value = this.muted ? 0 : 0.72 * this.volume;
     }
     if (this.ctx.state === 'suspended') this.ctx.resume();
   }
 
-  now() { return this.capture ? performance.now() / 1000 : (this.ctx ? this.ctx.currentTime : performance.now() / 1000); }
+  now() { return this.capture ? Date.now() / 1000 : (this.ctx ? this.ctx.currentTime : Date.now() / 1000); }
 
   play(name, when, p = {}) {
     if (this.capture) { this.log.push([name, when, p]); return; }
