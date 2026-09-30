@@ -125,7 +125,7 @@ class Dopakichi {
     this.look = { x: 0, y: 0 }; this.lookTarget = { x: 0, y: 0 };
     this.eyes = null; this.mouth = null;
     this.baseEyes = 'open'; this.baseMouth = 'smile';
-    this.blinkAt = performance.now() + 1800; this.blinkK = 0;
+    this.blinkAt = Date.now() + 1800; this.blinkK = 0;
     this.browLift = new Spring(0, 220, 14);
     this.browTilt = new Spring(0, 220, 14);
     this.cheekPuff = 0;
