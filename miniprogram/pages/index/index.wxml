@@ -1,0 +1,53 @@
+<view class="page {{celebrating ? 'celebrating' : ''}}">
+  <view class="topbar">
+    <view>
+      <text class="brand">多帕速算</text>
+      <text class="sub">DOPA DRILL · 微信小程序版</text>
+    </view>
+    <view class="pill">BEST {{bestScore}}</view>
+  </view>
+
+  <view class="stage">
+    <view class="spotlight s1"></view>
+    <view class="spotlight s2"></view>
+    <view class="confetti" wx:if="{{celebrating}}">✦　●　▲　✦　■　●</view>
+
+    <view class="mascot">
+      <view class="ear left"></view><view class="ear right"></view>
+      <view class="face">
+        <view class="eye"></view><view class="eye"></view>
+        <view class="mouth">{{celebrating ? 'ᴗ' : '⌣'}}</view>
+      </view>
+    </view>
+
+    <text class="combo" wx:if="{{combo > 1}}">{{combo}} COMBO!</text>
+    <text class="dopa">DOPA × {{dopa}}</text>
+
+    <view class="problem-card">
+      <text class="mode">{{modeLabel}}</text>
+      <view class="problem">
+        <text>{{a}}</text><text class="op">{{op}}</text><text>{{b}}</text><text class="eq">=</text>
+        <text class="answer {{feedback}}">{{answer || '?'}}</text>
+      </view>
+      <text class="hint">{{hint}}</text>
+    </view>
+  </view>
+
+  <view class="stats">
+    <view><text class="n">{{score}}</text><text class="l">SCORE</text></view>
+    <view><text class="n">{{correct}}</text><text class="l">CORRECT</text></view>
+    <view><text class="n">{{streak}}</text><text class="l">STREAK</text></view>
+  </view>
+
+  <view class="keypad">
+    <button class="key" wx:for="{{keys}}" wx:key="*this" data-key="{{item}}" bindtap="tapKey">{{item}}</button>
+    <button class="key utility" bindtap="backspace">⌫</button>
+    <button class="key zero" data-key="0" bindtap="tapKey">0</button>
+    <button class="key utility" bindtap="skip">↻</button>
+  </view>
+
+  <view class="footer">
+    <button class="mode-btn" bindtap="changeMode">{{modeLabel}}</button>
+    <button class="mode-btn" bindtap="toggleSound">声音 {{sound ? '开' : '关'}}</button>
+  </view>
+</view>
