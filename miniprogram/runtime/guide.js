@@ -1,3 +1,10 @@
+const dom=require('../platform/dom');
+const document=dom.document;
+const window=dom.window;
+const requestAnimationFrame=window.requestAnimationFrame;
+const cancelAnimationFrame=window.cancelAnimationFrame;
+Object.defineProperty(globalThis,'innerWidth',{get:()=>window.innerWidth,configurable:true});
+Object.defineProperty(globalThis,'innerHeight',{get:()=>window.innerHeight,configurable:true});
 const i18n=require('./i18n');
 
 // Title tour: captions belong to the interface, never to the mascot.
