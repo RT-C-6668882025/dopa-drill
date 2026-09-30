@@ -1,108 +1,28 @@
-const store = require('../../utils/store');
-
-const MODES = [
-  { key: 'add', label: '加法', op: '+' },
-  { key: 'sub', label: '减法', op: '−' },
-  { key: 'mul', label: '乘法', op: '×' },
-  { key: 'div', label: '除法', op: '÷' }
-];
-
-function rand(min, max) { return min + Math.floor(Math.random() * (max - min + 1)); }
-
+const store=require('../../utils/store');
+const {SKILLS,SKILL,LANES}=require('../../core/skills');
+const {makeProblem,makeRng}=require('../../core/problems');
+const seed=()=>((Date.now()^(Math.random()*0xffffffff))>>>0);
+function unlocked(sk,progress){return !sk.req.length||sk.req.every(id=>progress[id]&&progress[id].mastered)}
+function viewSkills(grade,progress){return SKILLS.filter(s=>s.grade===grade).map(s=>{const p=progress[s.id]||{};return Object.assign({},s,{locked:!unlocked(s,progress),stars:p.stars||0,starText:'★'.repeat(p.stars||0)+'☆'.repeat(5-(p.stars||0)),mastered:!!p.mastered,laneName:LANES[s.lane]})})}
+function decorate(p,revealed,active){const after={};(p.steps||[]).slice(0,revealed).forEach(s=>{after[s.cell]=true;(s.after||[]).forEach(id=>after[id]=true)});return (p.cells||[]).map(c=>({id:c.id,text:c.kind==='input'&&!after[c.id]?'':c.text,kind:c.kind,active:c.id===active,hidden:(c.kind==='auto'||c.kind==='carry'||c.kind==='mark')&&!after[c.id],style:'grid-row:'+(c.r+1)+' / span '+(c.rs||1)+';grid-column:'+(c.c+1)+' / span '+(c.cs||1)+';'}))}
 Page({
-  data: {
-    keys: [1,2,3,4,5,6,7,8,9],
-    a: 0, b: 0, op: '+', expected: 0, answer: '',
-    score: 0, correct: 0, combo: 0, streak: 0, dopa: '1.0',
-    bestScore: 0, modeIndex: 0, modeLabel: '加法',
-    feedback: '', celebrating: false, hint: '输入答案',
-    sound: true
-  },
-
-  onLoad() {
-    const saved = store.load();
-    this.setData({ bestScore: saved.bestScore || 0, sound: saved.sound !== false });
-    this.nextProblem();
-  },
-
-  makeProblem() {
-    const mode = MODES[this.data.modeIndex];
-    let a, b, expected;
-    if (mode.key === 'add') {
-      a = rand(1, 49); b = rand(1, 49); expected = a + b;
-    } else if (mode.key === 'sub') {
-      a = rand(10, 99); b = rand(1, a); expected = a - b;
-    } else if (mode.key === 'mul') {
-      a = rand(2, 9); b = rand(2, 9); expected = a * b;
-    } else {
-      b = rand(2, 9); expected = rand(2, 9); a = b * expected;
-    }
-    return { a, b, expected, op: mode.op, modeLabel: mode.label };
-  },
-
-  nextProblem() {
-    const p = this.makeProblem();
-    this.setData(Object.assign(p, { answer: '', feedback: '', celebrating: false, hint: '输入答案' }));
-  },
-
-  tapKey(e) {
-    if (this.locked) return;
-    const answer = (this.data.answer + String(e.currentTarget.dataset.key)).replace(/^0+(?=\d)/, '');
-    this.setData({ answer });
-    const target = String(this.data.expected);
-    if (answer.length >= target.length) this.check(answer);
-  },
-
-  backspace() {
-    if (this.locked) return;
-    this.setData({ answer: this.data.answer.slice(0, -1) });
-  },
-
-  skip() {
-    this.setData({ combo: 0, streak: 0, hint: '换一道，继续。' });
-    setTimeout(() => this.nextProblem(), 180);
-  },
-
-  check(answer) {
-    this.locked = true;
-    if (Number(answer) === this.data.expected) {
-      const combo = this.data.combo + 1;
-      const gain = 100 + Math.min(combo, 20) * 5;
-      const score = this.data.score + gain;
-      const correct = this.data.correct + 1;
-      const dopa = Math.min(9999, Math.pow(1.34, correct) * (1 + combo / 10)).toFixed(correct > 20 ? 0 : 1);
-      const bestScore = Math.max(this.data.bestScore, score);
-      this.setData({
-        score, correct, combo, streak: this.data.streak + 1, dopa, bestScore,
-        feedback: 'ok', celebrating: true,
-        hint: combo >= 10 ? '多巴胺暴走中 ✦' : '正确！'
-      });
-      store.save({ bestScore, totalCorrect: (store.load().totalCorrect || 0) + 1 });
-      if (this.data.sound) wx.vibrateShort({ type: combo >= 10 ? 'heavy' : 'light' });
-      setTimeout(() => { this.locked = false; this.nextProblem(); }, combo >= 10 ? 520 : 330);
-    } else {
-      this.setData({ feedback: 'ng', combo: 0, streak: 0, hint: '再试一次' });
-      if (this.data.sound) wx.vibrateShort({ type: 'medium' });
-      setTimeout(() => {
-        this.locked = false;
-        this.setData({ answer: '', feedback: '' });
-      }, 320);
-    }
-  },
-
-  changeMode() {
-    const modeIndex = (this.data.modeIndex + 1) % MODES.length;
-    this.setData({ modeIndex, modeLabel: MODES[modeIndex].label, combo: 0 });
-    this.nextProblem();
-  },
-
-  toggleSound() {
-    const sound = !this.data.sound;
-    this.setData({ sound });
-    store.save({ sound });
-  },
-
-  onUnload() {
-    store.save({ bestScore: this.data.bestScore, sessions: (store.load().sessions || 0) + 1 });
-  }
+ data:{screen:'home',grades:[1,2,3,4,5,6],grade:1,skills:[],skill:null,problem:null,cells:[],lines:[],step:0,combo:0,score:0,done:0,count:10,feedback:'',hint:'',keys:[1,2,3,4,5,6,7,8,9],stats:{},settings:{},history:[]},
+ onLoad(){this.refresh()},
+ refresh(){const s=store.load();this.setData({skills:viewSkills(this.data.grade,s.progress),stats:s.stats,settings:s.settings,count:s.settings.count,history:s.history.slice(-30).reverse()})},
+ showHome(){this.setData({screen:'home'});this.refresh()},
+ showSkills(){this.setData({screen:'skills'});this.refresh()},
+ showHistory(){this.setData({screen:'history'});this.refresh()},
+ showSettings(){this.setData({screen:'settings'});this.refresh()},
+ pickGrade(e){const grade=Number(e.currentTarget.dataset.grade),s=store.load();this.setData({grade,skills:viewSkills(grade,s.progress)})},
+ pickSkill(e){const id=e.currentTarget.dataset.id,sk=SKILL[id];if(!sk)return;const s=store.load();if(!unlocked(sk,s.progress)){wx.showToast({title:'先完成前置技能',icon:'none'});return}this.start(id)},
+ start(id){this.rng=makeRng(seed());this.skillId=id;this.session={score:0,done:0,combo:0,errors:0};this.setData({screen:'play',skill:SKILL[id],score:0,done:0,combo:0});this.next()},
+ next(){if(this.session.done>=this.data.count){this.finish();return}const p=makeProblem(this.skillId,this.rng);this.problem=p;this.firstTry=true;this.render(0,'')},
+ render(step,feedback){const p=this.problem,cur=p.steps[step];this.setData({problem:p,step,cells:decorate(p,step,cur&&cur.cell),gridStyle:'grid-template-columns:repeat('+Math.max(1,p.cols)+',1fr);grid-template-rows:repeat('+Math.max(1,p.rows)+',64rpx);',feedback,hint:cur?(cur.label||cur.hint||'数字を入力'):'',lines:p.lines||[]})},
+ tapKey(e){if(this.locked)return;const d=String(e.currentTarget.dataset.key),p=this.problem,st=p.steps[this.data.step];if(!st)return;if(d===String(st.digit)){const n=this.data.step+1;if(n>=p.steps.length){this.correctProblem()}else{this.render(n,'ok');if(this.data.settings.vibration)wx.vibrateShort({type:'light'})}}else{this.firstTry=false;this.session.errors++;this.setData({feedback:'ng',hint:(st.help&&st.help.text)||'再试行'});if(this.data.settings.vibration)wx.vibrateShort({type:'medium'})}},
+ correctProblem(){this.locked=true;const combo=this.session.combo+1,gain=100+Math.min(combo,20)*5;this.session.combo=combo;this.session.score+=gain;this.session.done++;store.recordSkill(this.skillId,this.firstTry);const s=store.load();s.stats.problems++;s.stats.cells+=this.problem.steps.length;s.stats.firstTry+=this.firstTry?1:0;s.stats.errors+=this.firstTry?0:1;s.stats.maxCombo=Math.max(s.stats.maxCombo,combo);s.stats.bestScore=Math.max(s.stats.bestScore,this.session.score);store.write(s);this.setData({combo,score:this.session.score,done:this.session.done,feedback:'complete',cells:decorate(this.problem,this.problem.steps.length,'')});if(this.data.settings.vibration)wx.vibrateShort({type:combo>=10?'heavy':'light'});setTimeout(()=>{this.locked=false;this.next()},420)},
+ finish(){const s=store.load();s.stats.plays++;store.write(s);store.addHistory({skill:this.skillId,name:SKILL[this.skillId].name,score:this.session.score,count:this.session.done,errors:this.session.errors});this.setData({screen:'result'});this.refresh()},
+ changeCount(e){const count=Number(e.currentTarget.dataset.count),s=store.load();s.settings.count=count;store.write(s);this.setData({count,settings:s.settings})},
+ toggleSound(){const s=store.load();s.settings.sound=!s.settings.sound;store.write(s);this.setData({settings:s.settings})},
+ toggleVibration(){const s=store.load();s.settings.vibration=!s.settings.vibration;store.write(s);this.setData({settings:s.settings})},
+ resetAll(){wx.showModal({title:'清除全部记录？',content:'学习进度、历史和设置都会删除，无法恢复。',success:r=>{if(r.confirm){store.reset();this.setData({grade:1});this.showHome()}}})}
 });
