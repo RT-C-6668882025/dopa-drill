@@ -73,7 +73,7 @@ function openGuide(help = false) {
 
 // ---------------------------------------------------------------- utilities
 const fmtTime = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
-const now = () => performance.now();
+const now = () => Date.now();
 
 function setLevelClasses(L) {
   for (let i = 0; i <= 10; i++) body.classList.toggle(`lv${i}`, i <= L);
@@ -559,11 +559,11 @@ function onCorrect(st, cell, last) {
   }
   if (!last) {
     audio.correct(S.combo, E);
-    if (!S.reduced && performance.now() > S.busyUntil) {
+    if (!S.reduced && Date.now() > S.busyUntil) {
       hero.earL.kick(500); hero.earR.kick(500);
       hero.setFace('happy', E > 0.4 ? 'grin' : 'cat');
       setTimeout(() => hero.resetFace(), 380);
-      if (E > 0.3 && chance(0.6)) { S.busyUntil = performance.now() + 450; hero.hop(14 + 30 * E, 300, { audio }); }
+      if (E > 0.3 && chance(0.6)) { S.busyUntil = Date.now() + 450; hero.hop(14 + 30 * E, 300, { audio }); }
     }
     crowd.forEach((m) => { if (chance(0.7)) m.hop(18 + rand(0, 20), 300); });
   }
@@ -583,7 +583,7 @@ function onWrong(cell, st) {
   setTimeout(() => {
     fx.burst(h.x, h.y - 20, { count: 10, kinds: ['star'], speed: 220, up: 60 });
     fx.ring(h.x, h.y, { color: '#fff', radius: 60, width: 7 });
-    S.busyUntil = performance.now() + 900;
+    S.busyUntil = Date.now() + 900;
     hero.hurt(E, c, { audio });
     if (E > 0.5) { S.shake = Math.max(S.shake, 8); S.flash = Math.max(S.flash, 0.12); }
     crowd.forEach((m) => { m.setFace('wide', 'o'); m.sq.kick(-3); setTimeout(() => m.resetFace(), 600); });
@@ -707,7 +707,7 @@ function celebrate(E, big, lastBasic) {
   const r = card.getBoundingClientRect();
   const cx = r.left + r.width / 2; const cy = r.top + r.height * 0.4;
   const W = innerWidth; const H = innerHeight;
-  S.busyUntil = performance.now() + 900;
+  S.busyUntil = Date.now() + 900;
   if (S.reduced) { hero.setFace('happy', 'grin'); setTimeout(() => hero.resetFace(), 700); return; }
   hero.celebrate(Math.min(1, E), { big: E > 0.5 || big, audio });
   crowd.forEach((m, i) => setTimeout(() => m.celebrate(Math.min(1, E), { big: E > 0.8 }), 60 * i));
@@ -2658,8 +2658,8 @@ function motionSliderFx(v) {
   if (v > 0.5) fx.ring(x, y, { color: v > 0.85 ? '#ffd23f' : '#ff7ab6', radius: 20 + 50 * v, width: 5 });
   S.shake = Math.max(S.shake, 6 * v * v);
   if (v > 0.9) S.flash = Math.max(S.flash, 0.25);
-  if (performance.now() > S.busyUntil) {
-    S.busyUntil = performance.now() + 260 + 200 * v;
+  if (Date.now() > S.busyUntil) {
+    S.busyUntil = Date.now() + 260 + 200 * v;
     hero.setFace(v > 0.7 ? 'star' : 'happy', v > 0.5 ? 'grin' : 'cat');
     setTimeout(() => hero.resetFace(), 420);
     if (v > 0.8) hero.hop(30 + 50 * v, 420, { spin: 360, audio });
