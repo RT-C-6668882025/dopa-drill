@@ -1,6 +1,7 @@
 const viewport=require('./viewport');
 const registry=new Map(); let page=null;
 function bindPage(p){page=p}
+function hydrate(ids){for(const id of ids||[])get(id)}
 function norm(sel){return String(sel||'').trim()}
 class ClassList{constructor(el){this.el=el} _set(){return new Set((this.el.className||'').split(/\s+/).filter(Boolean))} _put(s){this.el.className=[...s].join(' ');this.el.sync('className',this.el.className)} add(...xs){const s=this._set();xs.forEach(x=>s.add(x));this._put(s)} remove(...xs){const s=this._set();xs.forEach(x=>s.delete(x));this._put(s)} toggle(x,force){const s=this._set(),on=force===undefined?!s.has(x):!!force;on?s.add(x):s.delete(x);this._put(s);return on} contains(x){return this._set().has(x)}}
 class Style{constructor(el){this.el=el} setProperty(k,v){this[k]=String(v);this.el.syncStyle()} removeProperty(k){delete this[k];this.el.syncStyle()} set cssText(v){this._cssText=String(v);for(const part of String(v).split(';')){const i=part.indexOf(':');if(i>0)this[part.slice(0,i).trim()]=part.slice(i+1).trim()}this.el.syncStyle()} get cssText(){return this._cssText||''}}
@@ -29,7 +30,7 @@ const document={body,documentElement:get('__html'),activeElement:null,createText
 const window={devicePixelRatio:viewport.dpr(),get innerWidth(){return viewport.width()},get innerHeight(){return viewport.height()},performance:{now:()=>Date.now()},navigator:{language:'zh-CN'},location:{search:''},requestAnimationFrame:(fn)=>setTimeout(()=>fn(Date.now()),16),cancelAnimationFrame:(id)=>clearTimeout(id),addEventListener(){},removeEventListener(){}};
 function setRect(id,r){const e=get(id);e._rect={...r,right:r.right??r.left+r.width,bottom:r.bottom??r.top+r.height,x:r.x??r.left,y:r.y??r.top}}
 function tree(id){return get(id).children.map(serialize)}
-module.exports={document,window,Element,bindPage,get,setRect,tree};
+module.exports={document,window,Element,bindPage,hydrate,get,setRect,tree};
 
 function Image(){this.src='';this.width=0;this.height=0}
 module.exports.Image=Image;
