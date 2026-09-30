@@ -6,20 +6,20 @@ class ClassList{constructor(el){this.el=el} _set(){return new Set((this.el.class
 class Style{constructor(el){this.el=el} setProperty(k,v){this[k]=String(v);this.el.syncStyle()} removeProperty(k){delete this[k];this.el.syncStyle()} set cssText(v){this._cssText=String(v);for(const part of String(v).split(';')){const i=part.indexOf(':');if(i>0)this[part.slice(0,i).trim()]=part.slice(i+1).trim()}this.el.syncStyle()} get cssText(){return this._cssText||''}}
 class Element{
  constructor(id=''){this.id=id;this.dataset={};this.className='';this.style=new Style(this);this.classList=new ClassList(this);this.children=[];this.parentNode=null;this.hidden=false;this.disabled=false;this.value='';this._text='';this._html='';this._events={};this.tagName='DIV'}
- sync(k,v){if(page&&this.id)page.setData({['dom.'+this.id+'.'+k]:v})}
- syncStyle(){if(!page||!this.id)return;const o={};for(const k of Object.keys(this.style))if(k!=='el')o[k]=this.style[k];page.setData({['dom.'+this.id+'.style']:o})}
+ sync(k,v){if(page&&this.id)page.setData({['dom.'+this.id+'.'+k]:v});if(this.parentNode&&this.parentNode.id)this.parentNode.syncChildren()}
+ syncStyle(){const o={};for(const k of Object.keys(this.style))if(k!=='el'&&k!=='_cssText')o[k]=this.style[k];if(page&&this.id)page.setData({['dom.'+this.id+'.style']:o});if(this.parentNode&&this.parentNode.id)this.parentNode.syncChildren()} syncChildren(){if(page&&this.id)page.setData({['dom.'+this.id+'.children']:this.children.map(serialize)})}
  set textContent(v){this._text=String(v??'');this.sync('textContent',this._text)} get textContent(){return this._text}
- set innerHTML(v){this._html=String(v??'');this.sync('innerHTML',this._html)} get innerHTML(){return this._html}
+ set innerHTML(v){this._html=String(v??'');if(this._html==='')this.children=[];this.sync('innerHTML',this._html);this.syncChildren()} get innerHTML(){return this._html}
  setAttribute(k,v){if(k==='class')this.className=String(v);else if(k.startsWith('data-'))this.dataset[k.slice(5).replace(/-([a-z])/g,(_,x)=>x.toUpperCase())]=String(v);else this[k]=v;this.sync(k,v)}
  getAttribute(k){if(k==='class')return this.className;if(k.startsWith('data-'))return this.dataset[k.slice(5)];return this[k]??null}
- appendChild(x){x.parentNode=this;this.children.push(x);this.sync('children',this.children.map(serialize));return x} append(...xs){xs.forEach(x=>this.appendChild(typeof x==='string'?textNode(x):x))} replaceChildren(...xs){this.children=[];this.append(...xs)} remove(){if(this.parentNode)this.parentNode.children=this.parentNode.children.filter(x=>x!==this);if(this.id)registry.delete(this.id)}
+ appendChild(x){x.parentNode=this;this.children.push(x);this.syncChildren();return x} append(...xs){xs.forEach(x=>this.appendChild(typeof x==='string'?textNode(x):x))} replaceChildren(...xs){this.children=[];this.append(...xs)} remove(){if(this.parentNode)this.parentNode.children=this.parentNode.children.filter(x=>x!==this);if(this.id)registry.delete(this.id)}
  addEventListener(type,fn){(this._events[type]??=[]).push(fn)} removeEventListener(type,fn){this._events[type]=(this._events[type]||[]).filter(x=>x!==fn)}
  dispatch(type,event={}){for(const fn of this._events[type]||[])fn({...event,currentTarget:this,target:event.target||this})}
  querySelector(sel){return findIn(this,sel)[0]||null} querySelectorAll(sel){return findIn(this,sel)}
  closest(sel){let n=this;while(n){if(matches(n,sel))return n;n=n.parentNode}return null} focus(){} blur(){} scrollIntoView(){}
  getBoundingClientRect(){return this._rect||{left:0,top:0,right:0,bottom:0,width:0,height:0,x:0,y:0}}
 }
-function serialize(e){return e&&e.nodeType===3?{type:'text',text:e.textContent}:{type:'element',id:e.id||'',tag:(e.tagName||'view').toLowerCase(),className:e.className||'',textContent:e._text||'',innerHTML:e._html||'',dataset:e.dataset||{},style:Object.fromEntries(Object.entries(e.style||{}).filter(([k])=>k!=='el'))}}
+function serialize(e){return e&&e.nodeType===3?{type:'text',text:e.textContent}:{type:'element',id:e.id||'',tag:(e.tagName||'view').toLowerCase(),className:e.className||'',textContent:e._text||'',innerHTML:e._html||'',hidden:!!e.hidden,disabled:!!e.disabled,dataset:e.dataset||{},style:Object.fromEntries(Object.entries(e.style||{}).filter(([k])=>k!=='el'&&k!=='_cssText')),children:(e.children||[]).map(serialize)}}
 function textNode(v){return{nodeType:3,textContent:String(v),cloneNode(){return textNode(this.textContent)}}}
 function matches(e,sel){sel=String(sel||'').trim();if(sel.includes(' '))sel=sel.split(/\\s+/).pop();if(sel.includes(':'))sel=sel.split(':')[0];if(sel.startsWith('#'))return e.id===sel.slice(1);if(sel.startsWith('.'))return sel.slice(1).split('.').every(x=>e.classList.contains(x));if(sel==='button')return e.tagName==='BUTTON';if(sel.startsWith('[data-')){const k=sel.slice(6,-1).split('=')[0].replace(/-([a-z])/g,(_,x)=>x.toUpperCase());return e.dataset[k]!=null}return (e.tagName||'').toLowerCase()===sel.toLowerCase()}
 function findIn(root,sel){const out=[];const walk=n=>{for(const x of n.children||[]){if(matches(x,sel))out.push(x);walk(x)}};walk(root);return out}
