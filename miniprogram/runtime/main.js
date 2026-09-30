@@ -5,6 +5,9 @@ const requestAnimationFrame=dom.window.requestAnimationFrame;
 const performance=dom.window.performance;
 const navigator=dom.window.navigator;
 const location=dom.window.location;
+const matchMedia=dom.window.matchMedia;
+const addEventListener=dom.window.addEventListener;
+const removeEventListener=dom.window.removeEventListener;
 Object.defineProperty(globalThis,'innerWidth',{get:()=>dom.window.innerWidth,configurable:true});
 Object.defineProperty(globalThis,'innerHeight',{get:()=>dom.window.innerHeight,configurable:true});
 // Game flow, input, scoring, and the "director" that turns every event into
