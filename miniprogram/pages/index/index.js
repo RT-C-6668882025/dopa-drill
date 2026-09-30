@@ -35,5 +35,5 @@ Page({
   domTouchMove(e){const el=this.resolveEl(e);if(!el)return;const t=e.touches&&e.touches[0]||{};el.dispatch('pointermove',{target:el,pointerId:t.identifier||1,clientX:t.clientX||0,clientY:t.clientY||0,preventDefault(){}})},
   domTouchEnd(e){const el=this.resolveEl(e);if(el)el.dispatch('pointerup',{target:el,pointerId:1,preventDefault(){}})},
  measure(){const q=wx.createSelectorQuery().in(this);q.selectAll('[data-dom-id]').boundingClientRect(rs=>{for(const r of rs||[])if(r&&r.id)dom.setRect(r.id,r)}).exec()},
- bindCanvas(){return new Promise(resolve=>{const q=wx.createSelectorQuery().in(this);let left=3;for(const id of ['#fx','#fx-back','#bg'])q.select(id).fields({node:true,size:true},r=>{if(r&&r.node){const el=dom.get(id.slice(1));el.getContext=(...a)=>r.node.getContext(...a);el.width=r.width;el.height=r.height;el.style=el.style||{};el.addEventListener=el.addEventListener||(()=>{});el._node=r.node}if(--left===0)resolve()});q.exec()})}
+ bindCanvas(){return new Promise(resolve=>{const q=wx.createSelectorQuery().in(this);let left=3;for(const id of ['#fx','#fx-back','#bg'])q.select(id).fields({node:true,size:true},r=>{if(r&&r.node){const el=dom.bindCanvas(id.slice(1),r.node);el.width=r.width;el.height=r.height;el.style=el.style||{};el.addEventListener=el.addEventListener||(()=>{});el._node=r.node}if(--left===0)resolve()});q.exec()})}
 });
