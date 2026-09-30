@@ -91,4 +91,4 @@ const DEPTH = (() => {
 
 const skillsOfGrade = (g) => SKILLS.filter((s) => s.grade === g);
 
-module.exports = { LANES, MASTERY, SKILLS, SKILL, DEPTH, skillsOfGrade };
+module.exports={LANES,MASTERY,SKILLS,SKILL,DEPTH,skillsOfGrade};
