@@ -1,6 +1,12 @@
 const dom=require('../platform/dom');
 const document=dom.document;
 const window=dom.window;
+const requestAnimationFrame=dom.window.requestAnimationFrame;
+const performance=dom.window.performance;
+const navigator=dom.window.navigator;
+const location=dom.window.location;
+Object.defineProperty(globalThis,'innerWidth',{get:()=>dom.window.innerWidth,configurable:true});
+Object.defineProperty(globalThis,'innerHeight',{get:()=>dom.window.innerHeight,configurable:true});
 // Game flow, input, scoring, and the "director" that turns every event into
 // escalating visuals and sound.
 const { startClock, onFrame, wait, tween, clamp, lerp, rand, pick, chance, centerOf, params,
