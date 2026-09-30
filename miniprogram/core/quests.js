@@ -3,7 +3,7 @@
 // date (so it is the same all day) and from what this child can do today.
 // Pure logic; main.js feeds play events and saves the state.
 
-const {SKILL}=require('./skills');
+const { SKILL }=require('./skills');
 
 const QUEST_MINUTES = 15;
 
